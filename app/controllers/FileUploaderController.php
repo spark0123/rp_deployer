@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\controllers;
 
 use Illuminate\Routing\Controller as BaseController;
 use SSH;
