@@ -175,7 +175,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Collective/Remote/RemoteServiceProvider::class,
+        Collective\Remote\RemoteServiceProvider::class,
     ],
 
     /*
