@@ -1,11 +1,11 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use Illuminate\Routing\Controller as BaseController;
+use App\Http\Controllers\Controller;
 use SSH;
 
-class FileUploaderController extends BaseController
+class FileUploaderController extends Controller
 {
 
     public function deploy()

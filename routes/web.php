@@ -14,6 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
-if (file_exists(__DIR__.'/controllers/FileUploaderController.php')) {
-    Route::get('/deploy', 'FileUploaderController@deploy');
-}
+
+Route::get('/deploy', 'FileUploaderController@deploy');
+
