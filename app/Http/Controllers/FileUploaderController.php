@@ -15,5 +15,6 @@ class FileUploaderController extends Controller
     public function deploy()
     {
         Log::info('deploy');
+        print('test')
     }
 }
