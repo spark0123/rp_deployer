@@ -33,8 +33,31 @@ class FileUploaderController extends Controller
 		// upload file to remote
 		SSH::into('production')->put( '/tmp/rp_common_vod/rp_common_vod-master', '/448004/sue_test/' );
 
-		rmdir('/tmp/rp_common_vod');
+		deleteDirectory('/tmp/rp_common_vod');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
+
+    function deleteDirectory($dir) {
+    if (!file_exists($dir)) {
+        return true;
+    }
+
+    if (!is_dir($dir)) {
+        return unlink($dir);
+    }
+
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') {
+            continue;
+        }
+
+        if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            return false;
+        }
+
+    }
+
+    return rmdir($dir);
+}
 }
