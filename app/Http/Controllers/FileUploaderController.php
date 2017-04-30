@@ -33,7 +33,7 @@ class FileUploaderController extends Controller
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
         $remote_directory = "/448004/sue_test/";
         
-        $success = $this->dirToArray($local_directory); //$this->uploadAll($local_directory,$remote_directory);
+        $success = $this->uploadAll($local_directory,$remote_directory);
 
         if($success)
             return response()->json(['status' => 'success','message' => $success]);
@@ -73,11 +73,13 @@ class FileUploaderController extends Controller
         if(!empty($files_to_upload))
         {
             /* Now upload all the files to the remote server */
-            foreach($files_to_upload as $key => $file)
+            foreach($files_to_upload as $key => $files)
             {
                   /* Upload the local file to the remote server */
                   if($key != "0"){
-                      $success = SSH::into('production')->put($local_directory .'/' . $key .'/' . $file, $remote_directory .'/' . $key .'/' . $file);
+                        foreach ($files as $file) {
+                            $success = SSH::into('production')->put($local_directory .'/' . $key .'/' . $file, $remote_directory .'/' . $key .'/' . $file);
+                        }
                   }
             }
         }
