@@ -31,8 +31,13 @@ class FileUploaderController extends Controller
 		  echo 'unzip failed';
 		}
 
-		// upload file to remote
-		SSH::into('production')->put( '/tmp/rp_common_vod/rp_common_vod-master', '/448004/sue_test/' );
+		// upload files to remote
+		shell_exec('cd /tmp/rp_common_vod/rp_common_vod-master');
+		$commands = 'put -r /448004/sue_test/';
+		SSH::into('production')->run(array $commands, function($line)
+		{
+			echo $line.PHP_EOL;
+		});
 
 		$this->deleteDirectory('/tmp/rp_common_vod');
 
