@@ -6,8 +6,6 @@ use Log;
 
 class FileUploaderController extends Controller
 {
-
-    private $output;
     public function deploy()
     {
         //get master from github
@@ -29,7 +27,7 @@ class FileUploaderController extends Controller
           $zip->extractTo('/tmp/rp_common_vod');
           $zip->close();
         } else {
-          echo 'unzip failed';
+          return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }
 
         // upload files to remote
@@ -37,12 +35,10 @@ class FileUploaderController extends Controller
             'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
         ), function($line)
         {
-            $this->output = $line.PHP_EOL;
+            return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
         });
 
         //$this->deleteDirectory('/tmp/rp_common_vod');
-        return response()->json(['status' => 'success', 'message' => $this->output]);
-
     }
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
