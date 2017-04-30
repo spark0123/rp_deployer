@@ -36,7 +36,7 @@ class FileUploaderController extends Controller
         $success = $this->dirToArray($local_directory); //$this->uploadAll($local_directory,$remote_directory);
 
         if($success)
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success','message' => $success]);
         else
             return response()->json(['status' => 'fail']);
 
