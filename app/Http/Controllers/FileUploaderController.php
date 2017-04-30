@@ -11,29 +11,34 @@ class FileUploaderController extends Controller
         //get rp_common_vod master from github
         //unzip in local
         //deploy to sftp
-        //delete local files and zip file
+        //delete local files and zip files
         if (!is_dir('/tmp/rp_common_vod')) {
             mkdir('/tmp/rp_common_vod');
         }
+
 
         file_put_contents("/tmp/rp_common_vod/master.zip", 
             file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
         );
 
         $zip = new ZipArchive;
-        $path = '/tmp/rp_common_vod/master.zip';
-        if ($zip->open($path) === true) {
-            for($i = 0; $i < $zip->numFiles; $i++) {
-                $filename = $zip->getNameIndex($i);
-                $fileinfo = pathinfo($filename);
-                SSH::into('production')->put("zip://".$path."#".$filename, 'sue_test');
-            }                   
+        $res = $zip->open('/tmp/rp_common_vod/master.zip');
+        if ($res === TRUE) {
+            $zip->extractTo('/tmp/rp_common_vod');
             $zip->close(); 
-            return response()->json(['status' => 'success']);                  
-        }else {
+        } else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }
 
+        // upload files to remote
+        SSH::into('production')->run(array(
+            'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
+        ), function($line)
+        {
+            return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
+        });
+
+        SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', 'sue_test');
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
     private function deleteDirectory($dir) {
