@@ -31,9 +31,11 @@ class FileUploaderController extends Controller
         }*/
 
         // upload files to remote
-        SSH::into('production')->run(array(
+        SSH::into('production')->run([
             //'put -r /tmp/rp_common_vod/rp_common_vod-master/* /448004/sue_test/'
-            'put /tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css /448004/sue_test/rational-cc-panel.css'
+            'cd /448004/sue_test',
+            'put /tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css'
+            ]
         ), function($line)
         {
             return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
