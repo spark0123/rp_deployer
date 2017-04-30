@@ -31,7 +31,7 @@ class FileUploaderController extends Controller
         }
 
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
-        $remote_directory = "/448004/sue_test/"
+        $remote_directory = "/448004/sue_test/";
         /* We save all the filenames in the following array */
         $files_to_upload = array();
          
