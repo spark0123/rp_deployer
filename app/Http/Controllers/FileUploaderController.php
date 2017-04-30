@@ -21,7 +21,7 @@ class FileUploaderController extends Controller
         );
 
         $zip = new ZipArchive;
-        $path = '/tmp/rp_common_vod/master.zip'
+        $path = '/tmp/rp_common_vod/master.zip';
         if ($zip->open($path) === true) {
             for($i = 0; $i < $zip->numFiles; $i++) {
                 $filename = $zip->getNameIndex($i);
