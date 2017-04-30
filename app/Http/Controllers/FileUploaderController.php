@@ -32,6 +32,18 @@ class FileUploaderController extends Controller
 
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
         $remote_directory = "/448004/sue_test/";
+        
+        
+
+        if($success)
+            return response()->json(['status' => 'success']);
+        else
+            return response()->json(['status' => 'fail']);
+
+        //$this->deleteDirectory('/tmp/rp_common_vod');
+    }
+
+    private function uploadAll($local_directory, $remote_directory){
         /* We save all the filenames in the following array */
         $files_to_upload = array();
          
@@ -41,9 +53,13 @@ class FileUploaderController extends Controller
             /* This is the correct way to loop over the directory. */
             while (false !== ($file = readdir($handle))) 
             {
-                if ($file != "." && $file != "..") 
-                {
-                    $files_to_upload[] = $file;
+                if(is_dir($file)){
+                    $this->uploadAll($local_directory.$file.'/',$remote_directory.$file.'/')
+                }else{
+                    if ($file != "." && $file != "..") 
+                    {
+                        $files_to_upload[] = $file;
+                    }
                 }
             }
          
@@ -60,16 +76,7 @@ class FileUploaderController extends Controller
                   $success = SSH::into('production')->put($local_directory . $file, $remote_directory . $file);
             }
         }
-        
-
-        if($success)
-            return response()->json(['status' => 'success']);
-        else
-            return response()->json(['status' => 'fail']);
-
-        //$this->deleteDirectory('/tmp/rp_common_vod');
     }
-
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
             return true;
