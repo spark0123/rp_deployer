@@ -7,22 +7,33 @@ class FileUploaderController extends Controller
 
     public function deploy()
     {
-        /*
-sftp -oIdentityFile=/Users/sue.park/Downloads/rationalized_key.rsa -oHostKeyAlgorithms=+ssh-dss sshacs@tverationalstg.upload.akamai.com
-        */
-		
-        /*SSH::into('production')->run(array(
-            'cd ~/public_html/mywebsite',
-            'git pull origin master'
-        ), function($line){
-        
-            echo $line.PHP_EOL; // outputs server feedback
-        });*/
-        // see if file exists on remote
-		SSH::into('production')->exists( '/448004/sue_test/share_config.js' );
+    	//get master from github
+    	//unzip in local
+    	//deploy to sftp
+    	//delete local files
+    	if (!is_dir('/tmp')) {
+		    mkdir('/tmp');
+		}
+
+
+        file_put_contents("/tmp/master.zip", 
+		    file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
+		);
+
+		$zip = new ZipArchive;
+		$res = $zip->open('/tmp/master.zip');
+		if ($res === TRUE) {
+		  $zip->extractTo('/tmp/rp_common_vod');
+		  $zip->close();
+		  echo 'woot!';
+		} else {
+		  echo 'doh!';
+		}
 
 		// upload file to remote
-		SSH::into('production')->put( '/var/www/storage/logs/laravel.log', '/448004/sue_test/laravel.log' );
+		SSH::into('production')->put( '/tmp/rp_common_vod', '/448004/sue_test/' );
+
+		rmdir('/tmp/rp_common_vod');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
