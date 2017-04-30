@@ -38,7 +38,10 @@ class FileUploaderController extends Controller
             return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
         });*/
 
-        SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', 'sue_test');
+        $ssh_msg = SSH::into('production')->exists( '/448004/sue_test/share_config.js');
+        return response()->json(['status' => 'success', 'message' => $ssh_msg]);
+
+        //SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', 'sue_test');
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
     private function deleteDirectory($dir) {
