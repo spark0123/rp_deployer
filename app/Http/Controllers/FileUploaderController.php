@@ -38,7 +38,7 @@ class FileUploaderController extends Controller
             return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
         });*/
 
-        $ssh_msg = SSH::into('production')->exists( '/448004/sue_test/test2.txt.js');
+        $ssh_msg = SSH::into('production')->exists( '/448004/sue_test/test2.txt');
         return response()->json(['status' => 'success', 'message' => $ssh_msg]);
 
         //SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', 'sue_test');
