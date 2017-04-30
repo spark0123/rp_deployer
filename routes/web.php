@@ -10,8 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/mytest', function() {     return "Oh yeah, this really works !"; }); 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('deploy', 'FileUploaderController@deploy');
+
+Route::get('/server/deploy', 'FileUploaderController@deploy');
