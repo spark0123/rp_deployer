@@ -33,7 +33,7 @@ class FileUploaderController extends Controller
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
         $remote_directory = "/448004/sue_test/";
         
-        
+        $success = $this->uploadAll($local_directory,$remote_directory);
 
         if($success)
             return response()->json(['status' => 'success']);
@@ -76,6 +76,7 @@ class FileUploaderController extends Controller
                   $success = SSH::into('production')->put($local_directory . $file, $remote_directory . $file);
             }
         }
+        return $success;
     }
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
