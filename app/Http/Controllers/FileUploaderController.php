@@ -43,7 +43,7 @@ class FileUploaderController extends Controller
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
 
-    function dirToArray($dir) { 
+    public function dirToArray($dir) { 
    
        $result = array(); 
 
@@ -70,18 +70,6 @@ class FileUploaderController extends Controller
         /* We save all the filenames in the following array */
         $files_to_upload = array();
          
-        
-
-
-
-
-
-
-
-
-
-
-
         /* Open the local directory form where you want to upload the files */
         if ($handle = opendir($local_directory)) 
         {
