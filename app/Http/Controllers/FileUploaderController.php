@@ -21,12 +21,11 @@ class FileUploaderController extends Controller
         );
 
         $zip = new ZipArchive;
-
-        if ($zip->open('/tmp/rp_common_vod/master.zip') === true) {
+        $path = '/tmp/rp_common_vod/master.zip'
+        if ($zip->open($path) === true) {
             for($i = 0; $i < $zip->numFiles; $i++) {
                 $filename = $zip->getNameIndex($i);
                 $fileinfo = pathinfo($filename);
-                copy("zip://".$path."#".$filename, "/your/new/destination/".$fileinfo['basename']);
                 SSH::into('production')->put("zip://".$path."#".$filename, 'sue_test');
             }                   
             $zip->close(); 
