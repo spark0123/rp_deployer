@@ -33,12 +33,12 @@ class FileUploaderController extends Controller
 		// upload file to remote
 		SSH::into('production')->put( '/tmp/rp_common_vod/rp_common_vod-master', '/448004/sue_test/' );
 
-		deleteDirectory('/tmp/rp_common_vod');
+		$this->deleteDirectory('/tmp/rp_common_vod');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
 
-    function deleteDirectory($dir) {
+    private function deleteDirectory($dir) {
     if (!file_exists($dir)) {
         return true;
     }
