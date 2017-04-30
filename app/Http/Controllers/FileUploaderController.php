@@ -7,7 +7,7 @@ use Log;
 class FileUploaderController extends Controller
 {
 
-
+    private $output;
     public function deploy()
     {
         //get master from github
@@ -37,11 +37,11 @@ class FileUploaderController extends Controller
             'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
         ), function($line)
         {
-           Log::info('This is some useful information.');
-            echo $line.PHP_EOL;
+            $this->output = $line.PHP_EOL;
         });
 
         //$this->deleteDirectory('/tmp/rp_common_vod');
+        return response()->json(['status' => 'success', 'message' => $this->output]);
 
     }
     private function deleteDirectory($dir) {
