@@ -54,7 +54,7 @@ class FileUploaderController extends Controller
           { 
              if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) 
              { 
-                $result[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value); 
+                $result[$value] = $this->dirToArray($dir . DIRECTORY_SEPARATOR . $value); 
              } 
              else 
              { 
