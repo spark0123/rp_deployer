@@ -33,7 +33,7 @@ class FileUploaderController extends Controller
         SSH::into('production')->put('/tmp/rp_common_vod/master.zip', '/448004/sue_test/master.zip');
         SSH::into('production')->run([
             'cd /448004/sue_test/',
-            'unzip master.zip',
+            'unzip -o master.zip -d master',
         ]);
         return response()->json(['status' => 'success']);
 
