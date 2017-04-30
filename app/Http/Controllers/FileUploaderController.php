@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use ZipArchive;
 use SSH;
+use Log;
 
 class FileUploaderController extends Controller
 {
@@ -36,6 +37,7 @@ class FileUploaderController extends Controller
             'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
         ), function($line)
         {
+           Log::info('This is some useful information.');
             echo $line.PHP_EOL;
         });
 
