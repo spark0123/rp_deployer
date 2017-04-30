@@ -6,6 +6,7 @@ use SSH;
 class FileUploaderController extends Controller
 {
 
+
     public function deploy()
     {
     	//get master from github
@@ -37,27 +38,26 @@ class FileUploaderController extends Controller
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
+    private static function deleteDirectory($dir) {
+	    if (!file_exists($dir)) {
+	        return true;
+	    }
 
-    private function deleteDirectory($dir) {
-    if (!file_exists($dir)) {
-        return true;
-    }
+	    if (!is_dir($dir)) {
+	        return unlink($dir);
+	    }
 
-    if (!is_dir($dir)) {
-        return unlink($dir);
-    }
+	    foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') {
+	            continue;
+	        }
 
-    foreach (scandir($dir) as $item) {
-        if ($item == '.' || $item == '..') {
-            continue;
-        }
+	        if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+	            return false;
+	        }
 
-        if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
-            return false;
-        }
+	    }
 
-    }
-
-    return rmdir($dir);
-}
+	    return rmdir($dir);
+	}
 }
