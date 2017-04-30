@@ -24,7 +24,7 @@ class FileUploaderController extends Controller
 		$zip = new ZipArchive;
 		$res = $zip->open('/tmp/master.zip');
 		if ($res === TRUE) {
-		  $zip->extractTo('/tmp/rp_common_vod');
+		  $zip->extractTo('/tmp/');
 		  $zip->close();
 		} else {
 		  echo 'unzip failed';
@@ -33,7 +33,7 @@ class FileUploaderController extends Controller
 		// upload file to remote
 		SSH::into('production')->put( '/tmp/rp_common_vod', '/448004/sue_test/' );
 
-		rmdir('/tmp/rp_common_vod');
+		rmdir('/tmp');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
