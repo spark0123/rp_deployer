@@ -31,9 +31,9 @@ class FileUploaderController extends Controller
 		}
 
 		// upload file to remote
-		SSH::into('production')->put( '/tmp/rp_common_vod', '/448004/sue_test/' );
+		SSH::into('production')->put( '/tmp/rp_common_vod-master', '/448004/sue_test/' );
 
-		rmdir('/tmp');
+		rmdir('/tmp/rp_common_vod-master');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
