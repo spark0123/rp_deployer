@@ -31,15 +31,16 @@ class FileUploaderController extends Controller
         }*/
 
         // upload files to remote
+        $ssh_msg = '';
         SSH::into('production')->run([
             //'put -r /tmp/rp_common_vod/rp_common_vod-master/* /448004/sue_test/'
             'cd /448004/sue_test',
             'put /tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css'
             ], function($line)
             {
-                return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
+                $ssh_msg = $line.PHP_EOL
             });
-
+        return response()->json(['status' => 'success', 'message' => $ssh_msg]);
         //$ssh_msg = SSH::into('production')->exists( '/448004/sue_test/test2.txt');
         //return response()->json(['status' => 'success', 'message' => $ssh_msg]);
 
