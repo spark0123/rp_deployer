@@ -12,28 +12,28 @@ class FileUploaderController extends Controller
     	//unzip in local
     	//deploy to sftp
     	//delete local files
-    	if (!is_dir('/tmp')) {
-		    mkdir('/tmp');
+    	if (!is_dir('/tmp/rp_common_vod')) {
+		    mkdir('/tmp/rp_common_vod');
 		}
 
 
-        file_put_contents("/tmp/master.zip", 
+        file_put_contents("/tmp/rp_common_vod/master.zip", 
 		    file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
 		);
 
 		$zip = new ZipArchive;
-		$res = $zip->open('/tmp/master.zip');
+		$res = $zip->open('/tmp/rp_common_vod/master.zip');
 		if ($res === TRUE) {
-		  $zip->extractTo('/tmp/');
+		  $zip->extractTo('/tmp/rp_common_vod');
 		  $zip->close();
 		} else {
 		  echo 'unzip failed';
 		}
 
 		// upload file to remote
-		SSH::into('production')->put( '/tmp/rp_common_vod-master', '/448004/sue_test/' );
+		SSH::into('production')->put( '/tmp/rp_common_vod/rp_common_vod-master', '/448004/sue_test/' );
 
-		rmdir('/tmp/rp_common_vod-master');
+		rmdir('/tmp/rp_common_vod');
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
