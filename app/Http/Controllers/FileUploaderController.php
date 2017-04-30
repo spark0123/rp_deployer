@@ -38,7 +38,7 @@ class FileUploaderController extends Controller
 
         //SSH::into('production')->run('date', function($line) { echo $line; });
     }
-    private static function deleteDirectory($dir) {
+    private function deleteDirectory($dir) {
 	    if (!file_exists($dir)) {
 	        return true;
 	    }
@@ -52,7 +52,7 @@ class FileUploaderController extends Controller
 	            continue;
 	        }
 
-	        if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+	        if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
 	            return false;
 	        }
 
