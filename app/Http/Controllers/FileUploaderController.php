@@ -30,7 +30,7 @@ class FileUploaderController extends Controller
                 SSH::into('production')->put("zip://".$path."#".$filename, 'sue_test');
             }                   
             $zip->close(); 
-            return response()->json(['status' => 'success');                  
+            return response()->json(['status' => 'success']);                  
         }else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }
