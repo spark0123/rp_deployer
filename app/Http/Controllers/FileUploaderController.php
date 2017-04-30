@@ -18,6 +18,6 @@ sftp -oIdentityFile=/Users/sue.park/Downloads/rationalized_key.rsa -oHostKeyAlgo
         
             echo $line.PHP_EOL; // outputs server feedback
         });*/
-        SSH::into('production')->run('date', function($line) {dd($line); });
+        SSH::into('production')->run('date', function($line) { echo $line; });
     }
 }
