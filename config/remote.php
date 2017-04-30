@@ -13,7 +13,7 @@ return array(
 	|
 	*/
 
-	'default' => 'production',
+	'default' => 'stage',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -28,13 +28,21 @@ return array(
 
 	'connections' => array(
 
+		'stage' => array(
+			'host'      => env('STAGE_FTP_HOST', ''),
+			'username'  => env('STAGE_FTP_USERNAME', ''),
+			'password'  => env('STAGE_FTP_PW', ''),
+			'key'       => env('STAGE_FTP_KEY', ''),
+			'keyphrase' => env('STAGE_FTP_KEYPHRASE', ''),
+			'root'      => env('STAGE_FTP_ROOT', '/'),
+		),
 		'production' => array(
 			'host'      => env('FTP_HOST', ''),
 			'username'  => env('FTP_USERNAME', ''),
 			'password'  => env('FTP_PW', ''),
-			'key'       => '',
-			'keyphrase' => '',
-			'root'      => '/',
+			'key'       => env('FTP_KEY', ''),
+			'keyphrase' => env('FTP_KEYPHRASE', ''),
+			'root'      => env('FTP_ROOT', '/'),
 		),
 
 	),
