@@ -8,35 +8,32 @@ class FileUploaderController extends Controller
 {
     public function deploy()
     {
-        //get master from github
+        //get rp_common_vod master from github
         //unzip in local
         //deploy to sftp
-        //delete local files
+        //delete local files and zip file
         if (!is_dir('/tmp/rp_common_vod')) {
             mkdir('/tmp/rp_common_vod');
         }
-
 
         file_put_contents("/tmp/rp_common_vod/master.zip", 
             file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
         );
 
         $zip = new ZipArchive;
-        $res = $zip->open('/tmp/rp_common_vod/master.zip');
-        if ($res === TRUE) {
-          $zip->extractTo('/tmp/rp_common_vod');
-          $zip->close();
-        } else {
+
+        if ($zip->open('/tmp/rp_common_vod/master.zip') === true) {
+            for($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                $fileinfo = pathinfo($filename);
+                copy("zip://".$path."#".$filename, "/your/new/destination/".$fileinfo['basename']);
+                SSH::into('production')->put("zip://".$path."#".$filename, 'sue_test');
+            }                   
+            $zip->close(); 
+            return response()->json(['status' => 'success');                  
+        }else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }
-
-        // upload files to remote
-        SSH::into('production')->run(array(
-            'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
-        ), function($line)
-        {
-            return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
-        });
 
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
