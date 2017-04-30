@@ -31,14 +31,14 @@ class FileUploaderController extends Controller
         }
 
         // upload files to remote
-        SSH::into('production')->run(array(
+        /*SSH::into('production')->run(array(
             'put -r /tmp/rp_common_vod/rp_common_vod-master/* sue_test/'
         ), function($line)
         {
             return response()->json(['status' => 'success', 'message' => $line.PHP_EOL]);
-        });
+        });*/
 
-        SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', 'sue_test');
+        SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', '/448004/sue_test/');
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
     private function deleteDirectory($dir) {
