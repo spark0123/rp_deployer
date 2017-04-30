@@ -78,7 +78,8 @@ class FileUploaderController extends Controller
                   /* Upload the local file to the remote server */
                   if($key != "0"){
                         foreach ($files as $file) {
-                            $success = SSH::into('production')->put($local_directory .'/' . $key .'/' . $file, $remote_directory .'/' . $key .'/' . $file);
+                            $success = SSH::into('production')->put($local_directory . $key .'/' . $file, $remote_directory . $key .'/' . $file);
+                            break;
                         }
                   }
             }
