@@ -55,6 +55,7 @@ class FileUploaderController extends Controller
             {
                 if(is_dir($file)){
                     $this->uploadAll($local_directory.$file.'/',$remote_directory.$file.'/');
+                    break;
                 }else{
                     if ($file != "." && $file != "..") 
                     {
