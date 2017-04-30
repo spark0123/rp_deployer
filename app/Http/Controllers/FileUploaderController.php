@@ -1,8 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use App\Http\Controllers\Controller;
 use SSH;
 
 class FileUploaderController extends Controller

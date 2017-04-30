@@ -15,5 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/deploy', 'FileUploaderController@deploy');
+Route::get('deploy', 'FileUploaderController@deploy')->name('deploy');
 
