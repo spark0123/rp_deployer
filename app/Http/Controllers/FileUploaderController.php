@@ -12,7 +12,7 @@ class FileUploaderController extends Controller
         //unzip in local
         //deploy to sftp
         //delete local files and zip files
-        /*if (!is_dir('/tmp/rp_common_vod')) {
+        if (!is_dir('/tmp/rp_common_vod')) {
             mkdir('/tmp/rp_common_vod');
         }
 
@@ -20,7 +20,7 @@ class FileUploaderController extends Controller
         file_put_contents("/tmp/rp_common_vod/master.zip", 
             file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
         );
-
+/*
         $zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_vod/master.zip');
         if ($res === TRUE) {
@@ -30,22 +30,16 @@ class FileUploaderController extends Controller
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }*/
 
-        // upload files to remote
-        $ssh_msg = '';
+        SSH::into('production')->put('/tmp/rp_common_vod/master.zip', '/448004/sue_test/master.zip');
         SSH::into('production')->run([
-            //'put -r /tmp/rp_common_vod/rp_common_vod-master/* /448004/sue_test/'
-            //'cd /448004/sue_test',
-            //'put /tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css'
-            'date'
-            ])->display($line);
-        return response()->json(['status' => 'success', 'message' => $ssh_msg]);
-        //$ssh_msg = SSH::into('production')->exists( '/448004/sue_test/test2.txt');
-        //return response()->json(['status' => 'success', 'message' => $ssh_msg]);
+            'cd /448004/sue_test/',
+            'unzip master.zip',
+        ]);
+        return response()->json(['status' => 'success']);
 
-        /*$ssh_msg = SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/css/rational-cc-panel.css', '/448004/sue_test/rational-cc-panel.css');
-        return response()->json(['status' => 'success', 'message' => $ssh_msg]);*/
         //$this->deleteDirectory('/tmp/rp_common_vod');
     }
+
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
             return true;
