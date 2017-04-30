@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use League\Flysystem\ZipArchive;
 use SSH;
 
 class FileUploaderController extends Controller
