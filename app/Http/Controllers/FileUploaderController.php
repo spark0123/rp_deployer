@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use League\Flysystem\ZipArchive;
+use ZipArchive;
 use SSH;
 
 class FileUploaderController extends Controller
@@ -26,9 +26,8 @@ class FileUploaderController extends Controller
 		if ($res === TRUE) {
 		  $zip->extractTo('/tmp/rp_common_vod');
 		  $zip->close();
-		  echo 'woot!';
 		} else {
-		  echo 'doh!';
+		  echo 'unzip failed';
 		}
 
 		// upload file to remote
