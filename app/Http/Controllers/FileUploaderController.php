@@ -20,7 +20,7 @@ class FileUploaderController extends Controller
         file_put_contents("/tmp/rp_common_vod/master.zip", 
             file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
         );
-/*
+
         $zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_vod/master.zip');
         if ($res === TRUE) {
@@ -28,13 +28,10 @@ class FileUploaderController extends Controller
             $zip->close(); 
         } else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
-        }*/
+        }
 
-        SSH::into('production')->put('/tmp/rp_common_vod/master.zip', '/448004/sue_test/master.zip');
-        SSH::into('production')->run([
-            'cd /448004/sue_test/',
-            'unzip -o master.zip -d master',
-        ]);
+        SSH::into('production')->put('/tmp/rp_common_vod/rp_common_vod-master/*', '/448004/sue_test/master/*');
+
         return response()->json(['status' => 'success']);
 
         //$this->deleteDirectory('/tmp/rp_common_vod');
