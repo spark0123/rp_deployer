@@ -33,10 +33,10 @@ class FileUploaderController extends Controller
 
 		// upload files to remote
 		shell_exec('cd /tmp/rp_common_vod/rp_common_vod-master');
-		$commands = array(
+
+		SSH::into('production')->run(array(
             'put -r /448004/sue_test/'
-        );
-		SSH::into('production')->run(array $commands, function($line)
+        ), function($line)
 		{
 			echo $line.PHP_EOL;
 		});
