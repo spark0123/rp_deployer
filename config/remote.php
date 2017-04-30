@@ -29,12 +29,12 @@ return array(
 	'connections' => array(
 
 		'production' => array(
-			'host'      => '',
-			'username'  => '',
-			'password'  => '',
+			'host'      => env('FTP_HOST', ''),
+			'username'  => env('FTP_USERNAME', ''),
+			'password'  => env('FTP_PW', ''),
 			'key'       => '',
 			'keyphrase' => '',
-			'root'      => '/var/www',
+			'root'      => '/',
 		),
 
 	),
