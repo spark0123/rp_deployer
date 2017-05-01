@@ -87,7 +87,7 @@ class FileUploaderController extends Controller
                   }
             }
         }
-        return $files_uploaded[];
+        return $files_uploaded;
     }
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
