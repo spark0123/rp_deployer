@@ -33,10 +33,10 @@ class FileUploaderController extends Controller
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
         $remote_directory = "/448004/sue_test/";
         
-        $success = $this->uploadAll($local_directory,$remote_directory);
+        $uploaded = $this->uploadAll($local_directory,$remote_directory);
 
-        if($success)
-            return response()->json(['status' => 'success','message' => $success]);
+        if(count($uploaded))
+            return response()->json(['status' => 'success','message' => $uploaded]);
         else
             return response()->json(['status' => 'fail']);
 
@@ -69,6 +69,7 @@ class FileUploaderController extends Controller
     private function uploadAll($local_directory, $remote_directory){
         /* We save all the filenames in the following array */
         $files_to_upload = $this->dirToArray($local_directory);
+        $files_uploaded = array(); 
          
         if(!empty($files_to_upload))
         {
@@ -77,15 +78,16 @@ class FileUploaderController extends Controller
             {
                   /* Upload the local file to the remote server */
                   if($key != "0"){
-                        foreach ($files as $file) {
+                        foreach ($files as $idx => $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
-                            $success = SSH::into('production')->put($local,$remote);
+                            SSH::into('production')->put($local,$remote);
+                            $files_uploaded[] = $remote;
                         }
                   }
             }
         }
-        return $success;
+        return $files_uploaded[];
     }
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
