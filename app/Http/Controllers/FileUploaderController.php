@@ -32,12 +32,12 @@ class FileUploaderController extends Controller
 
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
         $remote_directory = "/448004/sue_test/master/";
-        $dir_exist = SSH::into('production')->exists( $remote_directory  );
+        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
                 'mkdir '.$remote_directory,
             ]);
-        }
+        }*/
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
         $this->deleteDirectory('/tmp/rp_common_vod');
         
@@ -84,12 +84,12 @@ class FileUploaderController extends Controller
             {
                   /* Upload the local file to the remote server */
                   if(!empty($key)){
-                        $dir_exist = SSH::into('production')->exists( $remote_directory . $key );
+                        /*$dir_exist = SSH::into('production')->exists( $remote_directory . $key );
                         if(!$dir_exist){
                             SSH::into('production')->run([
                                 'mkdir '.$remote_directory . $key ,
                             ]);
-                        }
+                        }*/
                         foreach ($files as $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
