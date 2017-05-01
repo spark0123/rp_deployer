@@ -81,7 +81,6 @@ class FileUploaderController extends Controller
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
                             $success = SSH::into('production')->put($local,$remote);
-                            break;
                         }
                   }
             }
