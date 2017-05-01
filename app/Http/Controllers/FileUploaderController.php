@@ -50,6 +50,49 @@ class FileUploaderController extends Controller
         
     }
 
+    public function deployPlayerCommonPlugin()
+    {
+        //get rp_common_vod master from github
+        //unzip in local
+        //deploy to sftp
+        //delete local files and zip files
+        if (!is_dir('/tmp/rp_common_plugin')) {
+            mkdir('/tmp/rp_common_plugin');
+        }
+
+
+        file_put_contents("/tmp/rp_common_plugin/master.zip", 
+            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip")
+        );
+
+        $zip = new ZipArchive;
+        $res = $zip->open('/tmp/rp_common_plugin/master.zip');
+        if ($res === TRUE) {
+            $zip->extractTo('/tmp/rp_common_plugin');
+            $zip->close(); 
+        } else {
+          return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
+        }
+
+        $local_directory = "/tmp/rp_common_plugin/rp_common_plugin-master/";
+        $remote_directory = "/448004/sue_test/rp_common_plugin/";
+        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
+        if(!$dir_exist){
+            SSH::into('production')->run([
+                'mkdir '.$remote_directory,
+            ]);
+        }*/
+        $uploaded = $this->uploadAll($local_directory,$remote_directory );
+        $this->deleteDirectory('/tmp/rp_common_plugin');
+        
+        if(count($uploaded))
+            return response()->json(['status' => 'success','message' => $uploaded]);
+        else
+            return response()->json(['status' => 'fail']);
+
+        
+    }
+
     public function dirToArray($dir) { 
    
        $result = array(); 
