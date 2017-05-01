@@ -34,13 +34,14 @@ class FileUploaderController extends Controller
         $remote_directory = "/448004/sue_test/";
         
         $uploaded = $this->uploadAll($local_directory,$remote_directory);
-
+        $this->deleteDirectory('/tmp/rp_common_vod');
+        
         if(count($uploaded))
             return response()->json(['status' => 'success','message' => $uploaded]);
         else
             return response()->json(['status' => 'fail']);
 
-        $this->deleteDirectory('/tmp/rp_common_vod');
+        
     }
 
     public function dirToArray($dir) { 
