@@ -1,10 +1,10 @@
 <?php
-ini_set('max_execution_time', 180);
+
 namespace App\Http\Controllers;
 use ZipArchive;
 use SSH;
 use Log;
-
+ini_set('max_execution_time', 180);
 class FileUploaderController extends Controller
 {
     public function deploy()
