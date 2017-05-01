@@ -70,14 +70,14 @@ class FileUploaderController extends Controller
         /* We save all the filenames in the following array */
         $files_to_upload = $this->dirToArray($local_directory);
         $files_uploaded = array(); 
-         
+        $dir_allowed = array("css","json","js") ;
         if(!empty($files_to_upload))
         {
             /* Now upload all the files to the remote server */
             foreach($files_to_upload as $key => $files)
             {
                   /* Upload the local file to the remote server */
-                  if($key === "json"){
+                  if(in_array($key, $dir_allowed) ){
                         foreach ($files as $idx => $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
