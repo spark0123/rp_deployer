@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/server/deploy', 'FileUploaderController@deploy');
+Route::post('/server/deploy', 'FileUploaderController@deploy');
