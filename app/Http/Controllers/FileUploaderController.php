@@ -77,7 +77,7 @@ class FileUploaderController extends Controller
             foreach($files_to_upload as $key => $files)
             {
                   /* Upload the local file to the remote server */
-                  if($key != "0"){
+                  if($key === "json"){
                         foreach ($files as $idx => $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
