@@ -31,7 +31,7 @@ class FileUploaderController extends Controller
         }
 
         $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
-        $remote_directory = "/448004/sue_test/";
+        $remote_directory = "/448004/sue_test/master/";
         
         $uploaded = $this->uploadAll($local_directory,$remote_directory);
         $this->deleteDirectory('/tmp/rp_common_vod');
