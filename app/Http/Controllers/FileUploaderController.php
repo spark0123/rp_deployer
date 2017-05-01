@@ -82,7 +82,7 @@ class FileUploaderController extends Controller
                         foreach ($files as $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
-                            //SSH::into('production')->put($local,$remote);
+                            SSH::into('production')->put($local,$remote);
                             $files_uploaded[] = $remote;
                         }
                   }
