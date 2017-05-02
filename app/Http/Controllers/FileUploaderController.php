@@ -63,9 +63,6 @@ class FileUploaderController extends Controller
         exec('cd /tmp/rp_common_plugin; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
     https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master | \
     tar xz --strip-components=1',$output);
-        return $output;
-
-        
 
         $local_directory = "/tmp/rp_common_plugin";
         $remote_directory = "/448004/sue_test/rp_common_plugin/";
