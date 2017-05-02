@@ -60,27 +60,20 @@ class FileUploaderController extends Controller
             mkdir('/tmp/rp_common_plugin');
         }
 
-        /*$context = stream_context_create(array('http' => array(
-            'header' => 'User-Agent: sistecs',
-        )));
-        file_put_contents("/tmp/rp_common_plugin/master.zip", 
-            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
-        );*/
-
         exec('cd /tmp/rp_common_plugin; curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
-    > master.zip',$output);
-        return $output;
+    > master.zip');
 
-        /*$zip = new ZipArchive;
+
+        $zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
         if ($res === TRUE) {
             $zip->extractTo('/tmp/rp_common_plugin');
             $zip->close(); 
         } else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
-        }*/
+        }
 
-        $local_directory = "/tmp/rp_common_plugin/";
+        $local_directory = "/tmp/rp_common_plugin/rp_common_plugin-master";
         $remote_directory = "/448004/sue_test/rp_common_plugin/";
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
@@ -89,6 +82,7 @@ class FileUploaderController extends Controller
             ]);
         }*/
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
+
         $this->deleteDirectory('/tmp/rp_common_plugin');
         
         if(count($uploaded))
@@ -143,7 +137,7 @@ class FileUploaderController extends Controller
                         foreach ($files as $file) {
                             $local = $local_directory . $key .'/' . $file;
                             $remote = $remote_directory . $key .'/' . $file;
-                            SSH::into('production')->put($local,$remote);
+                            //SSH::into('production')->put($local,$remote);
                             $files_uploaded[] = $remote;
                         }
                   }
