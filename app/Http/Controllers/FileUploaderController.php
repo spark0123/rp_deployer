@@ -67,25 +67,9 @@ class FileUploaderController extends Controller
             file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
         );*/
 
-        // Get cURL resource
-        $curl = curl_init();
-        // Set some options - we are passing in a useragent too here
-        $headers = [
-            'Authorization: token '.env('GITHUB_TOKEN', '')
-        ];
-        curl_setopt_array($curl, array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => 'https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip > /tmp/rp_common_plugin/master.zip',
-            CURLOPT_HTTPHEADER => $headers
-        ));
-        
-
-        // Send the request & save response to $resp
-        $resp = curl_exec($curl);
-
-        return print_r($resp);
-        // Close request to clear up some resources
-        curl_close($curl);
+        exec("wget \
+  --header='Authorization: token '".env('GITHUB_TOKEN', '')." \
+  https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master");
 
         $zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
