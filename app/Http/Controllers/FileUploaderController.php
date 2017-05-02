@@ -7,7 +7,7 @@ use Log;
 ini_set('max_execution_time', 180);
 class FileUploaderController extends Controller
 {
-    public function deploy()
+    public function deployPOC()
     {
         //get rp_common_vod master from github
         //unzip in local
@@ -52,54 +52,49 @@ class FileUploaderController extends Controller
 
     public function deployPlayerCommonPlugin()
     {
-        //get master from github
-        //unzip in local
-        //deploy to sftp
-        //delete local files
-        if (!is_dir('/tmp/rp_common_plugin')) {
-            mkdir('/tmp/rp_common_plugin');
-        }
-
-        exec('cd /tmp/rp_common_plugin; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
-    https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master | \
-    tar xz --strip-components=1',$output);
-
-        $local_directory = "/tmp/rp_common_plugin";
-        $remote_directory = "/448004/sue_test/rp_common_plugin";
-        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
-        if(!$dir_exist){
-            SSH::into('production')->run([
-                'mkdir '.$remote_directory,
-            ]);
-        }*/
-        $uploaded = $this->uploadAll($local_directory,$remote_directory );
-
-        $this->deleteDirectory('/tmp/rp_common_plugin');
-        
-        if(count($uploaded))
+        $folder_name = 'rp_common_plugin';
+        $repo_name = 'player.common.plugin';
+        $tag = 'master';
+        $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+        if(count($uploaded) > 0)
             return response()->json(['status' => 'success','message' => $uploaded]);
         else
             return response()->json(['status' => 'fail']);
 
         
     }
+
+
 
     public function deployPlayerCommonVOD()
     {
+        
+        $folder_name = 'rp_common_vod';
+        $repo_name = 'player.common.vod';
+        $tag = 'master';
+        $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+
+        if(count($uploaded))
+            return response()->json(['status' => 'success','message' => $uploaded]);
+        else
+            return response()->json(['status' => 'fail']);  
+    }
+
+    private function deploy($folder_name, $repo_name, $tag ){
         //get master from github
         //unzip in local
         //deploy to sftp
         //delete local files
-        if (!is_dir('/tmp/rp_common_vod')) {
-            mkdir('/tmp/rp_common_vod');
+        if (!is_dir('/tmp/'.$folder_name)) {
+            mkdir('/tmp/'.$folder_name);
         }
 
-        exec('cd /tmp/rp_common_vod; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
-    https://api.github.com/repos/NBCU-PAVE/player.common.vod/tarball/master | \
+        exec('cd /tmp/'.$folder_name.'; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
+    https://api.github.com/repos/NBCU-PAVE/'.$repo_name.'/tarball/'.$tag.' | \
     tar xz --strip-components=1',$output);
 
-        $local_directory = "/tmp/rp_common_vod";
-        $remote_directory = "/448004/sue_test/rp_common_vod";
+        $local_directory = "/tmp/".$folder_name;
+        $remote_directory = "/448004/sue_test/".$folder_name;
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
@@ -108,17 +103,12 @@ class FileUploaderController extends Controller
         }*/
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
 
-        $this->deleteDirectory('/tmp/rp_common_vod');
-        
-        if(count($uploaded))
-            return response()->json(['status' => 'success','message' => $uploaded]);
-        else
-            return response()->json(['status' => 'fail']);
+        $this->deleteDirectory('/tmp/'.$folder_name);
 
-        
+        return $uploaded;
     }
 
-    public function dirToArray($dir) { 
+    private function dirToArray($dir) { 
    
        $result = array(); 
 
@@ -178,6 +168,7 @@ class FileUploaderController extends Controller
         }
         return $files_uploaded;
     }
+
     private function deleteDirectory($dir) {
         if (!file_exists($dir)) {
             return true;
