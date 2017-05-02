@@ -61,7 +61,8 @@ class FileUploaderController extends Controller
         }
 
         exec('cd /tmp/rp_common_plugin; curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
-    > master.zip; sudo chmod 777 master.zip');
+    > master.zip;');
+        exec('sudo chmod 777 /tmp/rp_common_plugin/master.zip');
 
 
         $zip = new ZipArchive;
