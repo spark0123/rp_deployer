@@ -60,9 +60,10 @@ class FileUploaderController extends Controller
             mkdir('/tmp');
         }
         //git clone --branch <tag_name> <repo_url>
-        exec('cd /tmp; git clone git@github.com:NBCU-PAVE/player.common.plugin.git',$output);
-
-return $output;
+        exec('cd /tmp/rp_common_plugin; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
+    https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master | \
+    tar xz --strip-components=1',$output);
+        return $output;
 
         /*$zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
