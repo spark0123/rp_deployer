@@ -57,7 +57,7 @@ class FileUploaderController extends Controller
     public function deployPlayerCommonPlugin(Request $request)
     {
         $data = $request->json()->all();
-        if($data->ref === 'refs/heads/master'){
+        if($data['ref'] === 'refs/heads/master'){
             $folder_name = 'rp_common_plugin';
             $repo_name = 'player.common.plugin';
             $tag = 'master';
@@ -67,7 +67,7 @@ class FileUploaderController extends Controller
             else
                 return response()->json(['status' => 'fail']);
         }else{
-            return response()->json(['status' => 'success','message' => 'ignore '.$data->ref]);
+            return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
         } 
     }
 
@@ -76,7 +76,7 @@ class FileUploaderController extends Controller
     public function deployPlayerCommonVOD(Request $request)
     {
         $data = $request->json()->all();
-        if($data->ref === 'refs/heads/master'){
+        if($data['ref'] === 'refs/heads/master'){
             $folder_name = 'rp_common_vod';
             $repo_name = 'player.common.vod';
             $tag = 'master';
@@ -87,7 +87,7 @@ class FileUploaderController extends Controller
             else
                 return response()->json(['status' => 'fail']);  
         }else{
-            return response()->json(['status' => 'success','message' => 'ignore '.$data->ref]);
+            return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
         }
     }
 
