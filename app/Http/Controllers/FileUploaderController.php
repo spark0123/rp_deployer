@@ -134,8 +134,8 @@ class FileUploaderController extends Controller
                             }
                         }
                   }else{
-                        $local = $local_directory . DIRECTORY_SEPARATOR . $file;
-                        $remote = $remote_directory .DIRECTORY_SEPARATOR . $file;
+                        $local = $local_directory . DIRECTORY_SEPARATOR . $files;
+                        $remote = $remote_directory .DIRECTORY_SEPARATOR . $files;
                         //SSH::into('production')->put($local,$remote);
                         $files_uploaded[] = $remote;
                   }
