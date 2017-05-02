@@ -62,7 +62,7 @@ class FileUploaderController extends Controller
 
 
         file_put_contents("/tmp/rp_common_plugin/master.zip", 
-            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip")
+            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GIT_TOKEN', ''))
         );
 
         $zip = new ZipArchive;
