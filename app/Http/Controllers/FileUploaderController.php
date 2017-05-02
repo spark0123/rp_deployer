@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use ZipArchive;
 use SSH;
 use Log;
-use Request;
+use Illuminate\Http\Request;
 ini_set('max_execution_time', 180);
 
 class FileUploaderController extends Controller
