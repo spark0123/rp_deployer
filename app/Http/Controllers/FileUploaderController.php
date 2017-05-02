@@ -61,18 +61,18 @@ class FileUploaderController extends Controller
         }
 
         exec('cd /tmp/rp_common_plugin; curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
-    > master.zip;');
-        exec('sudo chmod 777 /tmp/rp_common_plugin/master.zip');
+    > master.zip | gunzip -',$output);
 
+return $output;
 
-        $zip = new ZipArchive;
+        /*$zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
         if ($res === TRUE) {
             $zip->extractTo('/tmp/rp_common_plugin');
             $zip->close(); 
         } else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
-        }
+        }*/
 
         $local_directory = "/tmp/rp_common_plugin/rp_common_plugin-master";
         $remote_directory = "/448004/sue_test/rp_common_plugin/";
