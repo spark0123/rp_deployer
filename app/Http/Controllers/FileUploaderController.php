@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Created by sue.park on 5/1/17.
+ */
 namespace App\Http\Controllers;
 use ZipArchive;
 use SSH;
@@ -55,33 +57,38 @@ class FileUploaderController extends Controller
     public function deployPlayerCommonPlugin(Request $request)
     {
         $data = $request->json()->all();
-        return response()->json(['status' => 'success','message' => $data]);
-        $folder_name = 'rp_common_plugin';
-        $repo_name = 'player.common.plugin';
-        $tag = 'master';
-        $uploaded = $this->deploy($folder_name,$repo_name,$tag);
-        if(count($uploaded) > 0)
-            return response()->json(['status' => 'success','message' => $uploaded]);
-        else
-            return response()->json(['status' => 'fail']);
-
-        
+        if($data->ref === 'refs/heads/master'){
+            $folder_name = 'rp_common_plugin';
+            $repo_name = 'player.common.plugin';
+            $tag = 'master';
+            $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+            if(count($uploaded) > 0)
+                return response()->json(['status' => 'success','message' => $uploaded]);
+            else
+                return response()->json(['status' => 'fail']);
+        }else{
+            return response()->json(['status' => 'success','message' => 'ignore '.$data->ref]);
+        } 
     }
 
 
 
-    public function deployPlayerCommonVOD()
+    public function deployPlayerCommonVOD(Request $request)
     {
-        
-        $folder_name = 'rp_common_vod';
-        $repo_name = 'player.common.vod';
-        $tag = 'master';
-        $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+        $data = $request->json()->all();
+        if($data->ref === 'refs/heads/master'){
+            $folder_name = 'rp_common_vod';
+            $repo_name = 'player.common.vod';
+            $tag = 'master';
+            $uploaded = $this->deploy($folder_name,$repo_name,$tag);
 
-        if(count($uploaded))
-            return response()->json(['status' => 'success','message' => $uploaded]);
-        else
-            return response()->json(['status' => 'fail']);  
+            if(count($uploaded))
+                return response()->json(['status' => 'success','message' => $uploaded]);
+            else
+                return response()->json(['status' => 'fail']);  
+        }else{
+            return response()->json(['status' => 'success','message' => 'ignore '.$data->ref]);
+        }
     }
 
     private function deploy($folder_name, $repo_name, $tag ){
