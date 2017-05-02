@@ -99,7 +99,8 @@ class FileUploaderController extends Controller
              } 
              else 
              { 
-                $result[] = $value; 
+                if($value != 'README.md')
+                    $result[] = $value; 
              } 
           } 
        } 
