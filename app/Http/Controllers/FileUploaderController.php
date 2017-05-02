@@ -67,7 +67,8 @@ class FileUploaderController extends Controller
             file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
         );*/
 
-        exec('cd /tmp/rp_common_plugin; curl -L -F "login=spark0123" -F "token='.env('GITHUB_TOKEN', '').'" https://github.com/NBCU-PAVE/player.common.plugin/zipball/master',$output);
+        exec('cd /tmp/rp_common_plugin; curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
+    > master.zip',$output);
         return $output;
 
         /*$zip = new ZipArchive;
