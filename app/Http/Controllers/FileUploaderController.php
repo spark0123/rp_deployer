@@ -60,9 +60,11 @@ class FileUploaderController extends Controller
             mkdir('/tmp/rp_common_plugin');
         }
 
-
+        $context = stream_context_create(array('http' => array(
+            'header' => 'User-Agent: sistecs',
+        )));
         file_put_contents("/tmp/rp_common_plugin/master.zip", 
-            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GIT_TOKEN', ''))
+            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GIT_TOKEN', ''),false, $context)
         );
 
         $zip = new ZipArchive;
