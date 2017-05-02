@@ -52,14 +52,14 @@ class FileUploaderController extends Controller
 
     public function deployPlayerCommonPlugin()
     {
-        //get rp_common_vod master from github
+        //get master from github
         //unzip in local
         //deploy to sftp
-        //delete local files and zip files
+        //delete local files
         if (!is_dir('/tmp/rp_common_plugin')) {
             mkdir('/tmp/rp_common_plugin');
         }
-        //git clone --branch <tag_name> <repo_url>
+
         exec('cd /tmp/rp_common_plugin; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
     https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master | \
     tar xz --strip-components=1',$output);
@@ -75,6 +75,40 @@ class FileUploaderController extends Controller
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
 
         $this->deleteDirectory('/tmp/rp_common_plugin');
+        
+        if(count($uploaded))
+            return response()->json(['status' => 'success','message' => $uploaded]);
+        else
+            return response()->json(['status' => 'fail']);
+
+        
+    }
+
+    public function deployPlayerCommonVOD()
+    {
+        //get master from github
+        //unzip in local
+        //deploy to sftp
+        //delete local files
+        if (!is_dir('/tmp/rp_common_vod')) {
+            mkdir('/tmp/rp_common_vod');
+        }
+
+        exec('cd /tmp/rp_common_vod; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
+    https://api.github.com/repos/NBCU-PAVE/player.common.vod/tarball/master | \
+    tar xz --strip-components=1',$output);
+
+        $local_directory = "/tmp/rp_common_vod";
+        $remote_directory = "/448004/sue_test/rp_common_vod";
+        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
+        if(!$dir_exist){
+            SSH::into('production')->run([
+                'mkdir '.$remote_directory,
+            ]);
+        }*/
+        $uploaded = $this->uploadAll($local_directory,$remote_directory );
+
+        $this->deleteDirectory('/tmp/rp_common_vod');
         
         if(count($uploaded))
             return response()->json(['status' => 'success','message' => $uploaded]);
