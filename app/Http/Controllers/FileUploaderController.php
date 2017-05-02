@@ -67,7 +67,8 @@ class FileUploaderController extends Controller
             file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
         );*/
 
-        exec("cd /tmp/rp_common_plugin; git clone https://github.com/NBCU-PAVE/player.common.plugin");
+        exec("cd /tmp/rp_common_plugin; git clone https://github.com/NBCU-PAVE/player.common.plugin",$output);
+        return $output;
 
         /*$zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
