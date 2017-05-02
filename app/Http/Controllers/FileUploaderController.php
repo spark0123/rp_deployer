@@ -60,8 +60,10 @@ class FileUploaderController extends Controller
             mkdir('/tmp/rp_common_plugin');
         }
 
-        exec('cd /tmp/rp_common_plugin; curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
-    > master.zip | gunzip -',$output);
+        exec('cd /tmp/rp_common_plugin&& \ 
+            curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
+    > master.zip ; \
+    unzip master.zip',$output);
 
 return $output;
 
