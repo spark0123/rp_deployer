@@ -79,7 +79,7 @@ class FileUploaderController extends Controller
         $local_folder_name = 'rp_common_plugin';
         $remote_directory = "/448004/sue_prod/".$local_folder_name;
         $repo_name = 'player.common.plugin';
-        $tag = $data['ref'];
+        $tag = 'releases/tag/'.$data['release']['tag_name'];
         return $tag;
         $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
         if(count($uploaded) > 0)
