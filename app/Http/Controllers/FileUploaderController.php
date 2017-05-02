@@ -76,13 +76,14 @@ class FileUploaderController extends Controller
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => 'https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip > /tmp/rp_common_plugin/master.zip',
-            CURLOPT_USERAGENT => 'Codular Sample cURL Request',
             CURLOPT_HTTPHEADER => $headers
         ));
         
 
         // Send the request & save response to $resp
         $resp = curl_exec($curl);
+
+        return print_r($resp);
         // Close request to clear up some resources
         curl_close($curl);
 
