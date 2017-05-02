@@ -58,10 +58,11 @@ class FileUploaderController extends Controller
     {
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
-            $folder_name = 'rp_common_plugin';
+            $local_folder_name = 'rp_common_plugin';
+            $remote_directory = "/448004/sue_test/".$local_folder_name;
             $repo_name = 'player.common.plugin';
             $tag = 'master';
-            $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
             if(count($uploaded) > 0)
                 return response()->json(['status' => 'success','message' => $uploaded]);
             else
@@ -71,16 +72,33 @@ class FileUploaderController extends Controller
         } 
     }
 
+    public function deployPlayerCommonPluginProd(Request $request)
+    {
+        $data = $request->json()->all();
+
+        $local_folder_name = 'rp_common_plugin';
+        $remote_directory = "/448004/sue_prod/".$local_folder_name;
+        $repo_name = 'player.common.plugin';
+        $tag = $data['ref'];
+        return $tag;
+        $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
+        if(count($uploaded) > 0)
+            return response()->json(['status' => 'success','message' => $uploaded]);
+        else
+            return response()->json(['status' => 'fail']);
+        
+    }
 
 
     public function deployPlayerCommonVOD(Request $request)
     {
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
-            $folder_name = 'rp_common_vod';
+            $local_folder_name = 'rp_common_vod';
+            $remote_directory = "/448004/sue_test/".$local_folder_name;
             $repo_name = 'player.common.vod';
             $tag = 'master';
-            $uploaded = $this->deploy($folder_name,$repo_name,$tag);
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
 
             if(count($uploaded))
                 return response()->json(['status' => 'success','message' => $uploaded]);
@@ -91,21 +109,20 @@ class FileUploaderController extends Controller
         }
     }
 
-    private function deploy($folder_name, $repo_name, $tag ){
+    private function deploy($local_folder_name, $remote_directory, $repo_name, $tag ){
         //get master from github
         //unzip in local
         //deploy to sftp
         //delete local files
-        if (!is_dir('/tmp/'.$folder_name)) {
-            mkdir('/tmp/'.$folder_name);
+        if (!is_dir('/tmp/'.$local_folder_name)) {
+            mkdir('/tmp/'.$local_folder_name);
         }
 
-        exec('cd /tmp/'.$folder_name.'; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
+        exec('cd /tmp/'.$local_folder_name.'; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
     https://api.github.com/repos/NBCU-PAVE/'.$repo_name.'/tarball/'.$tag.' | \
     tar xz --strip-components=1',$output);
 
-        $local_directory = "/tmp/".$folder_name;
-        $remote_directory = "/448004/sue_test/".$folder_name;
+        $local_directory = "/tmp/".$local_folder_name;
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
@@ -114,7 +131,7 @@ class FileUploaderController extends Controller
         }*/
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
 
-        $this->deleteDirectory('/tmp/'.$folder_name);
+        $this->deleteDirectory('/tmp/'.$local_folder_name);
 
         return $uploaded;
     }

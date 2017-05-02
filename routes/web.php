@@ -17,4 +17,5 @@ Route::get('/', function () {
 
 Route::post('/server/deploy', 'FileUploaderController@deployPOC');
 Route::post('/server/deploy/playercommonplugin', 'FileUploaderController@deployPlayerCommonPlugin');
+Route::post('/server/deploy/playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
 Route::post('/server/deploy/playercommonvod', 'FileUploaderController@deployPlayerCommonVOD');
