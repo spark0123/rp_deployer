@@ -67,20 +67,18 @@ class FileUploaderController extends Controller
             file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
         );*/
 
-        exec("wget \
-  --header='Authorization: token '".env('GITHUB_TOKEN', '')." \
-  https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball/master");
+        exec("cd /tmp/rp_common_plugin; git clone https://github.com/NBCU-PAVE/player.common.plugin");
 
-        $zip = new ZipArchive;
+        /*$zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
         if ($res === TRUE) {
             $zip->extractTo('/tmp/rp_common_plugin');
             $zip->close(); 
         } else {
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
-        }
+        }*/
 
-        $local_directory = "/tmp/rp_common_plugin/rp_common_plugin-master/";
+        $local_directory = "/tmp/rp_common_plugin/";
         $remote_directory = "/448004/sue_test/rp_common_plugin/";
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
