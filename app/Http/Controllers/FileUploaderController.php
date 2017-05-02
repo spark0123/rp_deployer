@@ -65,7 +65,7 @@ class FileUploaderController extends Controller
     tar xz --strip-components=1',$output);
 
         $local_directory = "/tmp/rp_common_plugin";
-        $remote_directory = "/448004/sue_test/rp_common_plugin/";
+        $remote_directory = "/448004/sue_test/rp_common_plugin";
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
@@ -118,19 +118,26 @@ class FileUploaderController extends Controller
             foreach($files_to_upload as $key => $files)
             {
                   /* Upload the local file to the remote server */
-                  if(!empty($key)){
+                  if( is_array($files)){
                         /*$dir_exist = SSH::into('production')->exists( $remote_directory . $key );
                         if(!$dir_exist){
                             SSH::into('production')->run([
                                 'mkdir '.$remote_directory . $key ,
                             ]);
                         }*/
-                        foreach ($files as $file) {
-                            $local = $local_directory . $key .'/' . $file;
-                            $remote = $remote_directory . $key .'/' . $file;
-                            //SSH::into('production')->put($local,$remote);
-                            $files_uploaded[] = $remote;
+                        if(!empty($key)){
+                            foreach ($files as $file) {
+                                $local = $local_directory . DIRECTORY_SEPARATOR . $key . DIRECTORY_SEPARATOR . $file;
+                                $remote = $remote_directory . DIRECTORY_SEPARATOR . $key .DIRECTORY_SEPARATOR . $file;
+                                //SSH::into('production')->put($local,$remote);
+                                $files_uploaded[] = $remote;
+                            }
                         }
+                  }else{
+                        $local = $local_directory . DIRECTORY_SEPARATOR . $file;
+                        $remote = $remote_directory .DIRECTORY_SEPARATOR . $file;
+                        //SSH::into('production')->put($local,$remote);
+                        $files_uploaded[] = $remote;
                   }
             }
         }
