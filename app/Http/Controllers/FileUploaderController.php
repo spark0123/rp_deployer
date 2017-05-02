@@ -50,8 +50,10 @@ class FileUploaderController extends Controller
         
     }
 
-    public function deployPlayerCommonPlugin()
+    public function deployPlayerCommonPlugin(Request $request)
     {
+        $data = $request->json()->all();
+        return response()->json(['status' => 'success','message' => $data]);
         $folder_name = 'rp_common_plugin';
         $repo_name = 'player.common.plugin';
         $tag = 'master';
