@@ -56,14 +56,11 @@ class FileUploaderController extends Controller
         //unzip in local
         //deploy to sftp
         //delete local files and zip files
-        if (!is_dir('/tmp/rp_common_plugin')) {
-            mkdir('/tmp/rp_common_plugin');
+        if (!is_dir('/tmp')) {
+            mkdir('/tmp');
         }
-
-        exec('cd /tmp/rp_common_plugin&& \ 
-            curl -L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/zipball/master?access_token=6ba9f45c980686484f1acb497946a23f2991f0a4 \
-    > master.zip ; \
-    unzip master.zip',$output);
+        //git clone --branch <tag_name> <repo_url>
+        exec('cd /tmp; git clone git@github.com:NBCU-PAVE/player.common.plugin.git',$output);
 
 return $output;
 
@@ -76,8 +73,8 @@ return $output;
           return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
         }*/
 
-        $local_directory = "/tmp/rp_common_plugin/rp_common_plugin-master";
-        $remote_directory = "/448004/sue_test/rp_common_plugin/";
+        $local_directory = "/tmp/player.common.plugin";
+        $remote_directory = "/448004/sue_test/player_common_plugin/";
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
@@ -86,7 +83,7 @@ return $output;
         }*/
         $uploaded = $this->uploadAll($local_directory,$remote_directory );
 
-        $this->deleteDirectory('/tmp/rp_common_plugin');
+        $this->deleteDirectory('/tmp/player.common.plugin');
         
         if(count($uploaded))
             return response()->json(['status' => 'success','message' => $uploaded]);
