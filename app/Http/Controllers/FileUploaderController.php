@@ -60,12 +60,31 @@ class FileUploaderController extends Controller
             mkdir('/tmp/rp_common_plugin');
         }
 
-        $context = stream_context_create(array('http' => array(
+        /*$context = stream_context_create(array('http' => array(
             'header' => 'User-Agent: sistecs',
         )));
         file_put_contents("/tmp/rp_common_plugin/master.zip", 
-            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GIT_TOKEN', ''),false, $context)
-        );
+            file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
+        );*/
+
+        // Get cURL resource
+        $curl = curl_init();
+        // Set some options - we are passing in a useragent too here
+        $headers = [
+            'Authorization: token '.env('GITHUB_TOKEN', '')
+        ];
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip > /tmp/rp_common_plugin/master.zip',
+            CURLOPT_USERAGENT => 'Codular Sample cURL Request',
+            CURLOPT_HTTPHEADER => $headers
+        ));
+        
+
+        // Send the request & save response to $resp
+        $resp = curl_exec($curl);
+        // Close request to clear up some resources
+        curl_close($curl);
 
         $zip = new ZipArchive;
         $res = $zip->open('/tmp/rp_common_plugin/master.zip');
