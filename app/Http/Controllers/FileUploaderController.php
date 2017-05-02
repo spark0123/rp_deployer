@@ -67,7 +67,8 @@ class FileUploaderController extends Controller
             file_get_contents("https://github.com/NBCU-PAVE/player.common.plugin/archive/master.zip?access_token=".env('GITHUB_TOKEN', ''),false, $context)
         );*/
 
-        exec('wget --quiet --post-data="login=spark0123&token="'.env('GITHUB_TOKEN', '').' --no-check-certificate https://github.com/NBCU-PAVE/player.common.plugin/tarball/master',$output);
+        exec('curl -H "Authorization: token "'.env('GITHUB_TOKEN', ''). '\
+-L https://api.github.com/repos/NBCU-PAVE/player.common.plugin/tarball > /tmp/rp_common_plugin/wut.tar.gz',$output);
         return $output;
 
         /*$zip = new ZipArchive;
