@@ -113,7 +113,7 @@ class FileUploaderController extends Controller
             {
                 echo $line.PHP_EOL;
                 return 'finished';
-            }););
+            });
 
         }
 
