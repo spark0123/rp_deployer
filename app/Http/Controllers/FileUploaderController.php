@@ -109,9 +109,14 @@ class FileUploaderController extends Controller
         if(!$dir_exist){
             SSH::into('production')->run([
                 'mkdir '.$remote_directory,
-            ]);
+            ], function($line)
+            {
+                echo $line.PHP_EOL;
+                return 'finished';
+            }););
+
         }
-        return 'done';
+
         $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
 
         $this->deleteDirectory('/tmp/'.$local_folder_name);
