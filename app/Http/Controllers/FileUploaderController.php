@@ -11,58 +11,16 @@ ini_set('max_execution_time', 180);
 
 class FileUploaderController extends Controller
 {
-    public function deployPOC()
-    {
-        //get rp_common_vod master from github
-        //unzip in local
-        //deploy to sftp
-        //delete local files and zip files
-        if (!is_dir('/tmp/rp_common_vod')) {
-            mkdir('/tmp/rp_common_vod');
-        }
-
-
-        file_put_contents("/tmp/rp_common_vod/master.zip", 
-            file_get_contents("https://github.com/spark0123/rp_common_vod/archive/master.zip")
-        );
-
-        $zip = new ZipArchive;
-        $res = $zip->open('/tmp/rp_common_vod/master.zip');
-        if ($res === TRUE) {
-            $zip->extractTo('/tmp/rp_common_vod');
-            $zip->close(); 
-        } else {
-          return response()->json(['status' => 'fail', 'message' => 'unzip failed.']);
-        }
-
-        $local_directory = "/tmp/rp_common_vod/rp_common_vod-master/";
-        $remote_directory = "/448004/sue_test/master/";
-        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
-        if(!$dir_exist){
-            SSH::into('production')->run([
-                'mkdir '.$remote_directory,
-            ]);
-        }*/
-        $uploaded = $this->uploadAll($local_directory,$remote_directory );
-        $this->deleteDirectory('/tmp/rp_common_vod');
-        
-        if(count($uploaded))
-            return response()->json(['status' => 'success','message' => $uploaded]);
-        else
-            return response()->json(['status' => 'fail']);
-
-        
-    }
-
+ 
     public function deployPlayerCommonPlugin(Request $request)
     {
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
             $local_folder_name = 'rp_common_plugin';
-            $remote_directory = "/448004/sue_test/".$local_folder_name;
+            $remote_directory = env('STAGE_FTP_ROOT', '').$local_folder_name;
             $repo_name = 'player.common.plugin';
             $tag = 'master';
-            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
             if(count($uploaded) > 0)
                 return response()->json(['status' => 'success','message' => $uploaded]);
             else
@@ -77,11 +35,11 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
 
         $local_folder_name = 'rp_common_plugin';
-        $remote_directory = "/448004/sue_prod/".$local_folder_name;
+        $remote_directory = env('FTP_ROOT', '').$local_folder_name;
         $repo_name = 'player.common.plugin';
         $tag = $data['release']['tag_name'];
 
-        $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
+        $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'production');
         if(count($uploaded) > 0)
             return response()->json(['status' => 'success','message' => $uploaded]);
         else
@@ -95,10 +53,10 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
             $local_folder_name = 'rp_common_vod';
-            $remote_directory = "/448004/sue_test/".$local_folder_name;
+            $remote_directory = env('STAGE_FTP_ROOT', '').$local_folder_name;
             $repo_name = 'player.common.vod';
             $tag = 'master';
-            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag);
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
 
             if(count($uploaded))
                 return response()->json(['status' => 'success','message' => $uploaded]);
@@ -109,7 +67,31 @@ class FileUploaderController extends Controller
         }
     }
 
-    private function deploy($local_folder_name, $remote_directory, $repo_name, $tag ){
+    public function deployPlayerCommonVODProd(Request $request)
+    {
+        $data = $request->json()->all();
+        $tag = $data['release']['tag_name'];
+        $prerelease = $data['release']['prerelease'];
+
+        $ftp_env = 'production';
+        $local_folder_name = 'rp_common_vod';
+        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag);
+        if($prerelease){
+           $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag); 
+           $ftp_env = 'stage';
+        }
+        $repo_name = 'player.common.vod';
+         
+        $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,$ftp_env);
+
+        if(count($uploaded))
+            return response()->json(['status' => 'success','message' => $uploaded]);
+        else
+            return response()->json(['status' => 'fail','message' => 'nothing to upload']);  
+
+    }
+
+    private function deploy($local_folder_name, $remote_directory, $repo_name, $tag ,$ftp_env ){
         //get master from github
         //unzip in local
         //deploy to sftp
@@ -123,13 +105,14 @@ class FileUploaderController extends Controller
     tar xz --strip-components=1',$output);
 
         $local_directory = "/tmp/".$local_folder_name;
-        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
+        $dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
                 'mkdir '.$remote_directory,
             ]);
-        }*/
-        $uploaded = $this->uploadAll($local_directory,$remote_directory );
+        }
+        return 'done';
+        $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
 
         $this->deleteDirectory('/tmp/'.$local_folder_name);
 
@@ -160,7 +143,7 @@ class FileUploaderController extends Controller
        return $result; 
     } 
 
-    private function uploadAll($local_directory, $remote_directory){
+    private function uploadAll($local_directory, $remote_directory, $ftp_env){
         /* We save all the filenames in the following array */
         $files_to_upload = $this->dirToArray($local_directory);
         $files_uploaded = array(); 
@@ -182,14 +165,14 @@ class FileUploaderController extends Controller
                             foreach ($files as $file) {
                                 $local = $local_directory . DIRECTORY_SEPARATOR . $key . DIRECTORY_SEPARATOR . $file;
                                 $remote = $remote_directory . DIRECTORY_SEPARATOR . $key .DIRECTORY_SEPARATOR . $file;
-                                SSH::into('production')->put($local,$remote);
+                                SSH::into($ftp_env)->put($local,$remote);
                                 $files_uploaded[] = $remote;
                             }
                         }
                   }else{
                         $local = $local_directory . DIRECTORY_SEPARATOR . $files;
                         $remote = $remote_directory .DIRECTORY_SEPARATOR . $files;
-                        SSH::into('production')->put($local,$remote);
+                        SSH::into($ftp_env)->put($local,$remote);
                         $files_uploaded[] = $remote;
                   }
             }
