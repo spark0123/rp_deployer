@@ -104,7 +104,7 @@ class FileUploaderController extends Controller
     https://api.github.com/repos/NBCU-PAVE/'.$repo_name.'/tarball/'.$tag.' | \
     tar xz --strip-components=1',$output);
         $local_directory = "/tmp/".$local_folder_name;
-        exec('scp -i /var/www/key/rationalized_key.rsa -rp '.$local_directory.' sshacs@tverationalstg.upload.akamai.com');
+        exec('scp -i /var/www/key/rationalized_key.rsa -rp '.$local_directory.' sshacs@tverationalstg.upload.akamai.com:sue_test');
        
         
         /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
