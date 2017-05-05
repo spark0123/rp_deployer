@@ -103,20 +103,22 @@ class FileUploaderController extends Controller
         exec('cd /tmp/'.$local_folder_name.'; wget --header="Authorization: token '.env('GITHUB_TOKEN', '').'" -O - \
     https://api.github.com/repos/NBCU-PAVE/'.$repo_name.'/tarball/'.$tag.' | \
     tar xz --strip-components=1',$output);
-
         $local_directory = "/tmp/".$local_folder_name;
-        $dir_exist = SSH::into('production')->exists( $remote_directory  );
+        exec('scp -i /var/www/key/rationalized_key.rsa -rp '.$local_directory.' sshacs@tverationalstg.upload.akamai.com');
+       
+        
+        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
         if(!$dir_exist){
             SSH::into('production')->run([
                 'mkdir '.$remote_directory,
             ], function($line)
             {
                 echo $line.PHP_EOL;
-                return 'finished';
+                
             });
 
-        }
-
+        }*/
+        return 'finished';
         $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
 
         $this->deleteDirectory('/tmp/'.$local_folder_name);
