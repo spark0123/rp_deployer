@@ -19,7 +19,7 @@ Route::post('/test', 'FileUploaderController@testDeploy');
 Route::group(['prefix' => 'server/deploy'], function () {
     Route::post('playercommonplugin', 'FileUploaderController@deployPlayerCommonPluginStage');
 	Route::post('playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
-	Route::post('playercommonvod', 'FileUploaderController@deployPlayerCommonVOD');
+	Route::post('playercommonvod', 'FileUploaderController@deployPlayerCommonVODStage');
 	Route::post('playercommonvodprod', 'FileUploaderController@deployPlayerCommonVODProd');
 
 });
