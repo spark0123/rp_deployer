@@ -8,7 +8,7 @@ use SSH;
 use Log;
 use Illuminate\Http\Request;
 ini_set('max_execution_time', 180);
-define('NET_SSH2_LOGGING', 3);
+//define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
 {
  
@@ -20,7 +20,6 @@ class FileUploaderController extends Controller
        // SSH::into('production')->put($local,$remote);
         $sftp = SSH::into('production');
         $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/');
-        $test_dir = $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/test');
         if(!$sftp->exists('test')){
             $sftp->getGateway()->getConnection()->mkdir('test');
         }
