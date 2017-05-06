@@ -7,7 +7,7 @@ use ZipArchive;
 use SSH;
 use Log;
 use Illuminate\Http\Request;
-use App\Notifications\ResouceDeployed;
+use App\Notifications\ResourceDeployed;
 use App\PlayerDeployer;
 ini_set('max_execution_time', 180);
 define('NET_SSH2_LOGGING', 3);
@@ -25,7 +25,7 @@ class FileUploaderController extends Controller
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
             if(count($uploaded) > 0){
-                $playerDeployer->notify(new ResouceDeployed($repo_name,$tag));
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$tag));
                 return response()->json(['status' => 'success','message' => $uploaded]);
             }
             else
