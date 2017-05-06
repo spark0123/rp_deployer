@@ -28,12 +28,13 @@ class FileUploaderController extends Controller
         $sftp->put($local,$remote);
     }
 
-    public function deployPlayerCommonPlugin(Request $request)
+    public function deployPlayerCommonPluginStage(Request $request)
     {
         $data = $request->json()->all();
-        if($data['ref'] === 'refs/heads/master'){
+        if($data['ref'] && $data['ref'] === 'refs/heads/master'){ //only deploy if master branch
             $local_folder_name = 'rp_common_plugin';
             $remote_directory = env('STAGE_FTP_ROOT', '').$local_folder_name;
+            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
             $repo_name = 'player.common.plugin';
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
@@ -42,7 +43,7 @@ class FileUploaderController extends Controller
             else
                 return response()->json(['status' => 'fail']);
         }else{
-            return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
+            return response()->json(['status' => 'success','message' => 'skipping deployment.']);
         } 
     }
 
@@ -51,9 +52,14 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
 
         $local_folder_name = 'rp_common_plugin';
-        $remote_directory = env('FTP_ROOT', '').$local_folder_name;
+        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
         $repo_name = 'player.common.plugin';
-        $tag = $data['release']['tag_name'];
+        $tag = '';
+        if($data['release'] && $data['release']['tag_name']){
+            $tag = $data['release']['tag_name'];
+        }else{
+            return response()->json(['status' => 'fail','message' => 'tag not found.']);
+        }
 
         $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'production');
         if(count($uploaded) > 0)
@@ -150,7 +156,7 @@ class FileUploaderController extends Controller
         $files_uploaded = array(); 
          
         $files_to_upload = $this->getDirContents($local_directory);
-
+        $sftp = SSH::into($ftp_env);
         if(!empty($files_to_upload))
         {
             /* Now upload all the files to the remote server */
@@ -161,7 +167,15 @@ class FileUploaderController extends Controller
                    */
                     $local = $file;
                     $remote = str_replace($local_directory,$remote_directory, $file);
-                    SSH::into($ftp_env)->put($local,$remote);
+                    if ($remote_dir_arr = explode(DIRECTORY_SEPARATOR, $remote)) { // create parts
+                        foreach ($remote_dir_arr as $remote_dir) { // each part
+                            if(!$sftp->exists($remote_dir)){
+                                $sftp->getGateway()->getConnection()->mkdir($remote_dir);
+                            }
+                            $sftp->getGateway()->getConnection()->chdir($remote_dir);
+                        }
+                    }
+                    $sftp->put($local,$remote);
                     $files_uploaded[] = $remote;
             }
         }

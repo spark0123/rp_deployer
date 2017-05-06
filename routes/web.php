@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 Route::post('/test', 'FileUploaderController@testDeploy');
 Route::post('/server/deploy', 'FileUploaderController@deployPOC');
-Route::post('/server/deploy/playercommonplugin', 'FileUploaderController@deployPlayerCommonPlugin');
+Route::post('/server/deploy/playercommonpluginstage', 'FileUploaderController@deployPlayerCommonPluginStage');
 Route::post('/server/deploy/playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
 Route::post('/server/deploy/playercommonvod', 'FileUploaderController@deployPlayerCommonVOD');
 Route::post('/server/deploy/playercommonvodprod', 'FileUploaderController@deployPlayerCommonVODProd');
