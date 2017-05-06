@@ -58,7 +58,7 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
             $local_folder_name = 'rp_common_vod';
-            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . 'master'); 
+            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . 'master'; 
             $repo_name = 'player.common.vod';
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
