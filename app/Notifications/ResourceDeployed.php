@@ -7,19 +7,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
+
 class ResourceDeployed extends Notification
 {
     use Queueable;
-    private $task;
+    private $repo;
+    private $branch;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($repo, $branch)
     {
         //
-        $this->task = $task;
+        $this->repo = $repo;
+        $this->branch = $branch;
     }
 
     /**
@@ -41,9 +44,10 @@ class ResourceDeployed extends Notification
      */
     public function toSlack($notifiable)
     {
-        $task = $this->task;
+        $repo = $this->repo;
+        $branch = $this->branch;
         return (new SlackMessage)
-            ->content("A task has been completed");
+            ->content('git repo = '. $repo . ', branch = ' . $branch . ' has been deployed.');
     }
 
     /**

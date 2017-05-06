@@ -7,12 +7,15 @@ use ZipArchive;
 use SSH;
 use Log;
 use Illuminate\Http\Request;
+use App\Notifications\ResouceDeployed;
+use App\PlayerDeployer;
 ini_set('max_execution_time', 180);
 define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
 {
     public function deployPlayerCommonPluginStage(Request $request)
     {
+        $playerDeployer = new PlayerDeployer();
         $data = $request->json()->all();
         if($data['ref'] && $data['ref'] === 'refs/heads/master'){ //only deploy if master branch
             $local_folder_name = 'rp_common_plugin';
@@ -21,8 +24,10 @@ class FileUploaderController extends Controller
             $repo_name = 'player.common.plugin';
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
-            if(count($uploaded) > 0)
+            if(count($uploaded) > 0){
+                $playerDeployer->notify(new ResouceDeployed($repo_name,$tag));
                 return response()->json(['status' => 'success','message' => $uploaded]);
+            }
             else
                 return response()->json(['status' => 'fail']);
         }else{
