@@ -12,6 +12,14 @@ ini_set('max_execution_time', 180);
 class FileUploaderController extends Controller
 {
  
+    public function testDeploy(Request $request)
+    {
+        $data = $request->json()->all();
+        $local = '/tmp/test/css/test.css';
+        $remote = '/448004/sue_test/test/css/test.css';
+        SSH::into('production')->put($local,$remote);
+    }
+
     public function deployPlayerCommonPlugin(Request $request)
     {
         $data = $request->json()->all();

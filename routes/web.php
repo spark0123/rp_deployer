@@ -14,7 +14,7 @@ Route::get('/mytest', function() {     return "Oh yeah, this really works !"; })
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::post('/test', 'FileUploaderController@testDeploy');
 Route::post('/server/deploy', 'FileUploaderController@deployPOC');
 Route::post('/server/deploy/playercommonplugin', 'FileUploaderController@deployPlayerCommonPlugin');
 Route::post('/server/deploy/playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
