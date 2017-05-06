@@ -19,17 +19,11 @@ class FileUploaderController extends Controller
         $remote = '/448004/sue_test/test/css/test.css';
        // SSH::into('production')->put($local,$remote);
         $sftp = SSH::into('production');
-        $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/');
-        if(!$sftp->exists('test')){
-            $sftp->getGateway()->getConnection()->mkdir('test');
+        if(!$sftp->exists('/448004/sue_test/test')){
+            $sftp->getGateway()->getConnection()->mkdir('/448004/sue_test/test');
         }
-        if($sftp->exists('/448004/sue_test/test/css'))
-            return 'true';
-        else
-            return 'false';
-        $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/test');
-        if(!$sftp->exists('css')){
-            $sftp->getGateway()->getConnection()->mkdir('css');
+        if(!$sftp->exists('/448004/sue_test/test/css')){
+            $sftp->getGateway()->getConnection()->mkdir('/448004/sue_test/test/css');
         }
         $sftp->put($local,$remote);
     }
