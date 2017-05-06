@@ -138,6 +138,8 @@ class FileUploaderController extends Controller
         $files = scandir($dir);
 
         foreach($files as $key => $value){
+            if($value === 'README.md') //skip README.md
+                continue;
             $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
             if(!is_dir($path)) {
                 $results[] = $path;
