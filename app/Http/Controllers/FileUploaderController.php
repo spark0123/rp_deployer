@@ -167,9 +167,13 @@ class FileUploaderController extends Controller
                    */
                     $local = $file;
                     $remote = str_replace($local_directory,$remote_directory, $file);
-                    if ($remote_dir_arr = explode(DIRECTORY_SEPARATOR, $remote)) { // create parts
-                        foreach ($remote_dir_arr as $idx => $remote_dir) { // each part
-                            if($idx === 0){
+                    if ($remote_dir_arr = explode(DIRECTORY_SEPARATOR, $remote)) { 
+                        $count = count($remote_dir_arr);
+                        foreach ($remote_dir_arr as $idx => $remote_dir) { //mkdir if not exist
+                            if (--$count <= 0) { // skip the last element (file)
+                                break;
+                            }
+                            if($idx === 0){ //skip the first element and chdir to root
                                 $sftp->getGateway()->getConnection()->chdir('/');
                                 continue;
                             }
