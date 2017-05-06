@@ -15,7 +15,7 @@ class FileUploaderController extends Controller
 {
     public function deployPlayerCommonPluginStage(Request $request)
     {
-        $playerDeployer = new PlayerDeployer();
+        
         $data = $request->json()->all();
         if($data['ref'] && $data['ref'] === 'refs/heads/master'){ //only deploy if master branch
             $local_folder_name = 'rp_common_plugin';
@@ -25,7 +25,8 @@ class FileUploaderController extends Controller
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
             if(count($uploaded) > 0){
-                $playerDeployer->notify(new ResourceDeployed($repo_name,$tag));
+                $playerDeployer = new PlayerDeployer();
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
                 return response()->json(['status' => 'success','message' => $uploaded]);
             }
             else
@@ -50,8 +51,11 @@ class FileUploaderController extends Controller
         }
 
         $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'production');
-        if(count($uploaded) > 0)
+        if(count($uploaded) > 0){
+            $playerDeployer = new PlayerDeployer();
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
             return response()->json(['status' => 'success','message' => $uploaded]);
+        }
         else
             return response()->json(['status' => 'fail']);
         
@@ -68,8 +72,11 @@ class FileUploaderController extends Controller
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
 
-            if(count($uploaded))
+            if(count($uploaded)){
+                $playerDeployer = new PlayerDeployer();
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
                 return response()->json(['status' => 'success','message' => $uploaded]);
+            }
             else
                 return response()->json(['status' => 'fail']);  
         }else{
@@ -92,8 +99,11 @@ class FileUploaderController extends Controller
          
         $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,$ftp_env);
 
-        if(count($uploaded))
+        if(count($uploaded)){
+            $playerDeployer = new PlayerDeployer();
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
             return response()->json(['status' => 'success','message' => $uploaded]);
+        }
         else
             return response()->json(['status' => 'fail','message' => 'nothing to upload']);  
 

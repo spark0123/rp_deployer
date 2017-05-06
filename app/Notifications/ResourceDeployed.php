@@ -12,17 +12,17 @@ class ResourceDeployed extends Notification
 {
     use Queueable;
     private $repo;
-    private $branch;
+    private $remote_dir;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($repo, $branch)
+    public function __construct($repo, $remote_dir)
     {
         //
         $this->repo = $repo;
-        $this->branch = $branch;
+        $this->remote_dir = $remote_dir;
     }
 
     /**
@@ -45,9 +45,9 @@ class ResourceDeployed extends Notification
     public function toSlack($notifiable)
     {
         $repo = $this->repo;
-        $branch = $this->branch;
+        $remote_dir = $this->remote_dir;
         return (new SlackMessage)
-            ->content('git repo = '. $repo . ', branch = ' . $branch . ' has been deployed.');
+            ->content('`' . $repo . '`' . ' deployed to `' . $remote_dir . '`');
     }
 
     /**
