@@ -8,7 +8,7 @@ use SSH;
 use Log;
 use Illuminate\Http\Request;
 ini_set('max_execution_time', 180);
-//define('NET_SSH2_LOGGING', 3);
+define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
 {
  
