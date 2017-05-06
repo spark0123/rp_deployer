@@ -17,7 +17,9 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
         $local = '/tmp/test/css/test.css';
         $remote = '/448004/sue_test/test/css/test.css';
-        SSH::into('production')->put($local,$remote);
+       // SSH::into('production')->put($local,$remote);
+        $sftp = SSH::into('production');
+        $sftp->getConnection()->put($remote, $local);
     }
 
     public function deployPlayerCommonPlugin(Request $request)
