@@ -126,7 +126,7 @@ class FileUploaderController extends Controller
                 $results[] = $path;
             } else if($value != "." && $value != "..") {
                 $this->getDirContents($path, $results);
-                $results[] = $path;
+                //$results[] = $path;
             }
         }
 
