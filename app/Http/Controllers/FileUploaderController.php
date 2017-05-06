@@ -112,21 +112,7 @@ class FileUploaderController extends Controller
     https://api.github.com/repos/NBCU-PAVE/'.$repo_name.'/tarball/'.$tag.' | \
     tar xz --strip-components=1',$output);
         $local_directory = "/tmp/".$local_folder_name;
-        exec('scp -i /var/www/key/rationalized_key.rsa -rp '.$local_directory.' sshacs@tverationalstg.upload.akamai.com:sue_test',$output);
-       
-        
-        /*$dir_exist = SSH::into('production')->exists( $remote_directory  );
-        if(!$dir_exist){
-            SSH::into('production')->run([
-                'mkdir '.$remote_directory,
-            ], function($line)
-            {
-                echo $line.PHP_EOL;
-                
-            });
 
-        }*/
-        return $output;
         $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
 
         $this->deleteDirectory('/tmp/'.$local_folder_name);
@@ -134,64 +120,41 @@ class FileUploaderController extends Controller
         return $uploaded;
     }
 
-    private function dirToArray($dir) { 
-   
-       $result = array(); 
-
-       $cdir = scandir($dir); 
-       foreach ($cdir as $key => $value) 
-       { 
-          if (!in_array($value,array(".",".."))) 
-          { 
-             if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) 
-             { 
-                $result[$value] = $this->dirToArray($dir . DIRECTORY_SEPARATOR . $value); 
-             } 
-             else 
-             { 
-                if($value !== 'README.md')
-                    $result[] = $value; 
-             } 
-          } 
-       } 
-       
-       return $result; 
-    } 
-
     private function uploadAll($local_directory, $remote_directory, $ftp_env){
         /* We save all the filenames in the following array */
-        $files_to_upload = $this->dirToArray($local_directory);
+        $files_to_upload = array();
         $files_uploaded = array(); 
+         
+        /* Open the local directory form where you want to upload the files */
+        if ($handle = opendir($local_directory)) 
+        {
+            /* This is the correct way to loop over the directory. */
+            while (false !== ($file = readdir($handle))) 
+            {
+                if ($file != "." && $file != "..") 
+                {
+                    $files_to_upload[] = $file;
+                }
+            }
+         
+            closedir($handle);
+        }
 
         if(!empty($files_to_upload))
         {
             /* Now upload all the files to the remote server */
-            foreach($files_to_upload as $key => $files)
+            foreach($files_to_upload as $file)
             {
-                  /* Upload the local file to the remote server */
-                  if( is_array($files)){
-                        /*$dir_exist = SSH::into('production')->exists( $remote_directory . $key );
-                        if(!$dir_exist){
-                            SSH::into('production')->run([
-                                'mkdir '.$remote_directory . $key ,
-                            ]);
-                        }*/
-                        if(!empty($key)){
-                            foreach ($files as $file) {
-                                $local = $local_directory . DIRECTORY_SEPARATOR . $key . DIRECTORY_SEPARATOR . $file;
-                                $remote = $remote_directory . DIRECTORY_SEPARATOR . $key .DIRECTORY_SEPARATOR . $file;
-                                SSH::into($ftp_env)->put($local,$remote);
-                                $files_uploaded[] = $remote;
-                            }
-                        }
-                  }else{
-                        $local = $local_directory . DIRECTORY_SEPARATOR . $files;
-                        $remote = $remote_directory .DIRECTORY_SEPARATOR . $files;
-                        SSH::into($ftp_env)->put($local,$remote);
-                        $files_uploaded[] = $remote;
-                  }
+                  /* Upload the local file to the remote server 
+                     put('remote file', 'local file');
+                   */
+                    $local = $local_directory . DIRECTORY_SEPARATOR . $file;
+                    $remote = $remote_directory .DIRECTORY_SEPARATOR . $file;
+                    SSH::into($ftp_env)->put($local,$remote);
+                    $files_uploaded[] = $remote;
             }
         }
+         
         return $files_uploaded;
     }
 
