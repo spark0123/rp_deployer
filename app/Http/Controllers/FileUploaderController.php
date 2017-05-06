@@ -8,7 +8,7 @@ use SSH;
 use Log;
 use Illuminate\Http\Request;
 ini_set('max_execution_time', 180);
-define('NET_SSH2_LOGGING', 3);
+//define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
 {
  
@@ -23,7 +23,7 @@ class FileUploaderController extends Controller
         $sftp->getGateway()->getConnection()->mkdir('test');
         $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/test');
         $sftp->getGateway()->getConnection()->mkdir('css');
-        $sftp->putString($local,$remote);
+        $sftp->put($local,$remote);
     }
 
     public function deployPlayerCommonPlugin(Request $request)
