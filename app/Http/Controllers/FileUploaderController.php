@@ -23,7 +23,10 @@ class FileUploaderController extends Controller
         if(!$sftp->exists('test')){
             $sftp->getGateway()->getConnection()->mkdir('test');
         }
-        return $sftp->exists('css');
+        if($sftp->exists('css'))
+            return 'true';
+        else
+            return 'false';
         $sftp->getGateway()->getConnection()->chdir('/448004/sue_test/test');
         if(!$sftp->exists('css')){
             $sftp->getGateway()->getConnection()->mkdir('css');
