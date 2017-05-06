@@ -120,25 +120,28 @@ class FileUploaderController extends Controller
         return $uploaded;
     }
 
+    private function getDirContents($dir, &$results = array()){
+        $files = scandir($dir);
+
+        foreach($files as $key => $value){
+            $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+            if(!is_dir($path)) {
+                $results[] = $path;
+            } else if($value != "." && $value != "..") {
+                $this->getDirContents($path, $results);
+                $results[] = $path;
+            }
+        }
+
+        return $results;
+    } 
+
     private function uploadAll($local_directory, $remote_directory, $ftp_env){
         /* We save all the filenames in the following array */
         $files_to_upload = array();
         $files_uploaded = array(); 
          
-        /* Open the local directory form where you want to upload the files */
-        if ($handle = opendir($local_directory)) 
-        {
-            /* This is the correct way to loop over the directory. */
-            while (false !== ($file = readdir($handle))) 
-            {
-                if ($file != "." && $file != "..") 
-                {
-                    $files_to_upload[] = $file;
-                }
-            }
-         
-            closedir($handle);
-        }
+        $files_to_upload = $this->getDirContents($local_directory);
 
         if(!empty($files_to_upload))
         {
