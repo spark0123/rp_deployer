@@ -1,4 +1,4 @@
 .env
-vender
-vender/*
+vendor
+vendor/*
 key/*
