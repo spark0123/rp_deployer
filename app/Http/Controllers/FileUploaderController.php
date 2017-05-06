@@ -11,23 +11,6 @@ ini_set('max_execution_time', 180);
 define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
 {
- 
-    public function testDeploy(Request $request)
-    {
-        $data = $request->json()->all();
-        $local = '/tmp/test/css/test.css';
-        $remote = '/448004/sue_test/test/css/test.css';
-       // SSH::into('production')->put($local,$remote);
-        $sftp = SSH::into('production');
-        if(!$sftp->exists('/448004/sue_test/test')){
-            $sftp->getGateway()->getConnection()->mkdir('/448004/sue_test/test');
-        }
-        if(!$sftp->exists('/448004/sue_test/test/css')){
-            $sftp->getGateway()->getConnection()->mkdir('/448004/sue_test/test/css');
-        }
-        $sftp->put($local,$remote);
-    }
-
     public function deployPlayerCommonPluginStage(Request $request)
     {
         $data = $request->json()->all();
@@ -70,12 +53,12 @@ class FileUploaderController extends Controller
     }
 
 
-    public function deployPlayerCommonVOD(Request $request)
+    public function deployPlayerCommonVODStage(Request $request)
     {
         $data = $request->json()->all();
         if($data['ref'] === 'refs/heads/master'){
             $local_folder_name = 'rp_common_vod';
-            $remote_directory = env('STAGE_FTP_ROOT', '').$local_folder_name;
+            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . 'master'); 
             $repo_name = 'player.common.vod';
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
@@ -92,16 +75,14 @@ class FileUploaderController extends Controller
     public function deployPlayerCommonVODProd(Request $request)
     {
         $data = $request->json()->all();
-        $tag = $data['release']['tag_name'];
-        $prerelease = $data['release']['prerelease'];
-
+        $tag = $data['release']['tag_name']; 
+        if(isset($data['release']['prerelease']) && $data['release']['prerelease']){
+           return response()->json(['status' => 'success','message' => 'skip prerelease.']); 
+        }
         $ftp_env = 'production';
         $local_folder_name = 'rp_common_vod';
-        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag);
-        if($prerelease){
-           $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag); 
-           $ftp_env = 'stage';
-        }
+        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag); 
+        
         $repo_name = 'player.common.vod';
          
         $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,$ftp_env);
@@ -216,3 +197,4 @@ class FileUploaderController extends Controller
         return rmdir($dir);
     }
 }
+
