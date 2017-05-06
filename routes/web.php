@@ -10,13 +10,16 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/mytest', function() {     return "Oh yeah, this really works !"; }); 
+
 Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/test', 'FileUploaderController@testDeploy');
-Route::post('/server/deploy', 'FileUploaderController@deployPOC');
-Route::post('/server/deploy/playercommonpluginstage', 'FileUploaderController@deployPlayerCommonPluginStage');
-Route::post('/server/deploy/playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
-Route::post('/server/deploy/playercommonvod', 'FileUploaderController@deployPlayerCommonVOD');
-Route::post('/server/deploy/playercommonvodprod', 'FileUploaderController@deployPlayerCommonVODProd');
+
+Route::group(['prefix' => 'server/deploy'], function () {
+    Route::post('playercommonplugin', 'FileUploaderController@deployPlayerCommonPluginStage');
+	Route::post('playercommonpluginprod', 'FileUploaderController@deployPlayerCommonPluginProd');
+	Route::post('playercommonvod', 'FileUploaderController@deployPlayerCommonVOD');
+	Route::post('playercommonvodprod', 'FileUploaderController@deployPlayerCommonVODProd');
+
+});
