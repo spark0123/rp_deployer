@@ -19,7 +19,7 @@ class FileUploaderController extends Controller
         $remote = '/448004/sue_test/test/css/test.css';
        // SSH::into('production')->put($local,$remote);
         $sftp = SSH::into('production');
-        $sftp->putSpring('test',$remote);
+        $sftp->putString('test',$remote);
     }
 
     public function deployPlayerCommonPlugin(Request $request)
