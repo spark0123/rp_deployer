@@ -153,7 +153,7 @@ class FileUploaderController extends Controller
                    */
                     $local = $local_directory . DIRECTORY_SEPARATOR . $file;
                     $remote = str_replace($local_directory,$remote_directory, $file);
-                    //SSH::into($ftp_env)->put($local,$remote);
+                    SSH::into($ftp_env)->put($local,$remote);
                     $files_uploaded[] = $remote;
             }
         }
