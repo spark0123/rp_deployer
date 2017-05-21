@@ -9,6 +9,8 @@ use Log;
 use Illuminate\Http\Request;
 use App\Notifications\ResourceDeployed;
 use App\PlayerDeployer;
+use Illuminate\Support\Facades\Storage;
+
 ini_set('max_execution_time', 180);
 define('NET_SSH2_LOGGING', 3);
 class FileUploaderController extends Controller
@@ -19,7 +21,6 @@ class FileUploaderController extends Controller
         $data = $request->json()->all();
         if($data['ref'] && $data['ref'] === 'refs/heads/master'){ //only deploy if master branch
             $local_folder_name = 'rp_common_plugin';
-            $remote_directory = env('STAGE_FTP_ROOT', '').$local_folder_name;
             $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
             $repo_name = 'player.common.plugin';
             $tag = 'master';
@@ -31,9 +32,26 @@ class FileUploaderController extends Controller
             }
             else
                 return response()->json(['status' => 'fail']);
-        }else{
-            return response()->json(['status' => 'success','message' => 'skipping deployment.']);
-        } 
+        }
+
+        if($data['ref'] && $data['ref'] === 'refs/heads/dev'){
+
+            $local_folder_name = 'rp_common_plugin';
+            $remote_directory = env('DEV_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
+            $repo_name = 'player.common.plugin';
+            $tag = 'dev';
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
+            if(count($uploaded) > 0){
+                $playerDeployer = new PlayerDeployer();
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
+                return response()->json(['status' => 'success','message' => $uploaded]);
+            }
+            else
+                return response()->json(['status' => 'fail']);
+        }
+
+
+        return response()->json(['status' => 'success','message' => 'skipping deployment.']); 
     }
 
     public function deployPlayerCommonPluginProd(Request $request)
@@ -123,7 +141,11 @@ class FileUploaderController extends Controller
     tar xz --strip-components=1',$output);
         $local_directory = "/tmp/".$local_folder_name;
 
-        $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
+        if($ftp_env == 'dev'){
+            $uploaded = Storage::disk('dev_ftp')->put($local_directory, $remote_directory);
+        }else{
+            $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
+        }
 
         $this->deleteDirectory('/tmp/'.$local_folder_name);
 
