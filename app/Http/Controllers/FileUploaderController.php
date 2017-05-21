@@ -142,7 +142,7 @@ class FileUploaderController extends Controller
         $local_directory = "/tmp/".$local_folder_name;
 
         if($ftp_env == 'dev'){
-            $uploaded = Storage::disk('dev_ftp')->put($remote_directory, $local_directory);
+            $uploaded = $this->uploadAllFTP($local_directory,$remote_directory, $ftp_env);
         }else{
             $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
         }
@@ -169,6 +169,31 @@ class FileUploaderController extends Controller
 
         return $results;
     } 
+
+    private function uploadAllFTP($local_directory, $remote_directory, $ftp_env){
+        /* We save all the filenames in the following array */
+        $files_to_upload = array();
+        $files_uploaded = array(); 
+         
+        $files_to_upload = $this->getDirContents($local_directory);
+        $ftp = Storage::disk($ftp_env.'_ftp');
+        if(!empty($files_to_upload))
+        {
+            /* Now upload all the files to the remote server */
+            foreach($files_to_upload as $file)
+            {
+                  /* Upload the local file to the remote server 
+                     put('remote file', 'local file');
+                   */
+                    $local = $file;
+                    $remote = str_replace($local_directory,$remote_directory, $file);
+                    $ftp->put($remote, $local)
+                    $files_uploaded[] = $remote;
+            }
+        }
+         
+        return $files_uploaded;
+    }
 
     private function uploadAll($local_directory, $remote_directory, $ftp_env){
         /* We save all the filenames in the following array */
