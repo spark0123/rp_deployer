@@ -19,10 +19,10 @@ class FileUploaderController extends Controller
     {
         
         $data = $request->json()->all();
+        $local_folder_name = 'rp_common_plugin';
+        $repo_name = 'player.common.plugin';
         if($data['ref'] && $data['ref'] === 'refs/heads/master'){ //only deploy if master branch
-            $local_folder_name = 'rp_common_plugin';
             $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
-            $repo_name = 'player.common.plugin';
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
             if(count($uploaded) > 0){
@@ -35,10 +35,7 @@ class FileUploaderController extends Controller
         }
 
         if($data['ref'] && $data['ref'] === 'refs/heads/dev'){
-
-            $local_folder_name = 'rp_common_plugin';
             $remote_directory = env('DEV_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'plugin';
-            $repo_name = 'player.common.plugin';
             $tag = 'dev';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
             if(count($uploaded) > 0){
