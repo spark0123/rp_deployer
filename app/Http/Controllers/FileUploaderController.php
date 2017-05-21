@@ -187,7 +187,7 @@ class FileUploaderController extends Controller
                    */
                     $local = $file;
                     $remote = str_replace($local_directory,$remote_directory, $file);
-                    $ftp->put($remote, $local)
+                    $ftp->put($remote, $local);
                     $files_uploaded[] = $remote;
             }
         }
