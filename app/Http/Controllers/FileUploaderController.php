@@ -142,7 +142,7 @@ class FileUploaderController extends Controller
         $local_directory = "/tmp/".$local_folder_name;
 
         if($ftp_env == 'dev'){
-            $uploaded = Storage::disk('dev_ftp')->put($local_directory, $remote_directory);
+            $uploaded = Storage::disk('dev_ftp')->put($remote_directory, $local_directory);
         }else{
             $uploaded = $this->uploadAll($local_directory,$remote_directory, $ftp_env);
         }
