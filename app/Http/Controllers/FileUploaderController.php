@@ -80,10 +80,13 @@ class FileUploaderController extends Controller
     public function deployPlayerCommonVODStage(Request $request)
     {
         $data = $request->json()->all();
+        $local_folder_name = 'rp_common_vod';
+        $repo_name = 'player.common.vod';
+
         if($data['ref'] === 'refs/heads/master'){
-            $local_folder_name = 'rp_common_vod';
-            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . 'master'; 
-            $repo_name = 'player.common.vod';
+            
+            $remote_directory = env('STAGE_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . env('STAGE_VOD_VERSION', ''); 
+            
             $tag = 'master';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'stage');
 
@@ -94,9 +97,24 @@ class FileUploaderController extends Controller
             }
             else
                 return response()->json(['status' => 'fail']);  
-        }else{
-            return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
         }
+        
+        if($data['ref'] && $data['ref'] === 'refs/heads/dev'){
+            $remote_directory = env('DEV_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . env('STAGE_VOD_VERSION', ''); 
+            $tag = 'dev';
+            $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
+
+            if(count($uploaded)){
+                $playerDeployer = new PlayerDeployer();
+                //$playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
+                return response()->json(['status' => 'success','message' => $uploaded]);
+            }
+            else
+                return response()->json(['status' => 'fail']); 
+        }
+
+        return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
+        
     }
 
     public function deployPlayerCommonVODProd(Request $request)
