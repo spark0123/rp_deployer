@@ -40,7 +40,7 @@ class FileUploaderController extends Controller
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
             if(count($uploaded) > 0){
                 $playerDeployer = new PlayerDeployer();
-                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
+                //$playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
                 return response()->json(['status' => 'success','message' => $uploaded]);
             }
             else
