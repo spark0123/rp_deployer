@@ -40,7 +40,7 @@ class FileUploaderController extends Controller
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
             if(count($uploaded) > 0){
                 $playerDeployer = new PlayerDeployer();
-                //$playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
                 return response()->json(['status' => 'success','message' => $uploaded]);
             }
             else
@@ -49,6 +49,7 @@ class FileUploaderController extends Controller
 
 
         return response()->json(['status' => 'success','message' => 'skipping deployment.']); 
+         
     }
 
     public function deployPlayerCommonPluginProd(Request $request)
@@ -100,13 +101,13 @@ class FileUploaderController extends Controller
         }
         
         if($data['ref'] && $data['ref'] === 'refs/heads/dev'){
-            $remote_directory = env('DEV_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . env('STAGE_VOD_VERSION', ''); 
+            $remote_directory = env('DEV_FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . env('DEV_VOD_VERSION', ''); 
             $tag = 'dev';
             $uploaded = $this->deploy($local_folder_name,$remote_directory,$repo_name,$tag,'dev');
 
             if(count($uploaded)){
                 $playerDeployer = new PlayerDeployer();
-                //$playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
+                $playerDeployer->notify(new ResourceDeployed($repo_name,$remote_directory));
                 return response()->json(['status' => 'success','message' => $uploaded]);
             }
             else
@@ -114,7 +115,6 @@ class FileUploaderController extends Controller
         }
 
         return response()->json(['status' => 'success','message' => 'ignore '.$data['ref']]);
-        
     }
 
     public function deployPlayerCommonVODProd(Request $request)
@@ -126,7 +126,7 @@ class FileUploaderController extends Controller
         }
         $ftp_env = 'production';
         $local_folder_name = 'rp_common_vod';
-        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . str_replace('RP','',$tag); 
+        $remote_directory = env('FTP_ROOT', '').'player' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'vod' . DIRECTORY_SEPARATOR . env('VOD_VERSION', ''); 
         
         $repo_name = 'player.common.vod';
          
@@ -209,7 +209,7 @@ class FileUploaderController extends Controller
          
         return $files_uploaded;
     }
-
+    
     private function uploadAll($local_directory, $remote_directory, $ftp_env){
         /* We save all the filenames in the following array */
         $files_to_upload = array();
